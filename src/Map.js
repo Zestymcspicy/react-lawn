@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
+import Directions from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
+import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css'
+
 
 
 class Map extends Component {
@@ -19,26 +22,50 @@ componentDidMount (){
     container: this.myMap,
     style: 'mapbox://styles/mapbox/navigation-guidance-day-v2',
     zoom: 14,
-    boxZoom: true
+    boxZoom: true,
+    pitch: 60
   });
-  new mapboxgl.GeolocateControl({
+  this.userLocationMarker= new mapboxgl.Marker()
+  this.map.addControl(new mapboxgl.GeolocateControl({
     positonOptions: {
       enableHighAccuracy: true
     },
     trackUserLocation: true
+  }));
+  this.directions = new Directions({
+    accessToken: mapboxgl.accessToken,
+    profile: 'mapbox/driving',
+    steps: true,
+    approaches: 'curb'
   });
+  this.map.addControl(this.directions, 'top-left');
+
   navigator.geolocation.getCurrentPosition(function (pos) {
-    myApp.setMapCenter([pos.coords.longitude, pos.coords.latitude]);
+    let loc = [pos.coords.longitude, pos.coords.latitude];
+    myApp.setMapCenter(loc);
+    myApp.setUserLocation(loc);
   })
 }
 
 setMapCenter(location)  {
-    this.map.setCenter(location)
+    this.map.setCenter(location);
+}
+
+setUserLocation(location) {
+    this.userLocationMarker.setLngLat(location);
+    this.userLocationMarker.addTo(this.map)
 }
 
 
 render(){
-  const mapStyle = {top: "0", left:"0", right:"0", bottom: "0", position:"absolute", width: "100%"}
+  const mapStyle = {
+    top: "10%",
+    left:"0",
+    right:"0",
+    bottom: "0",
+    position:"absolute",
+    width: "100%"
+  }
   return(
     <div ref={el => this.myMap = el} style={mapStyle}> </div>
   )
