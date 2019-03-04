@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
+
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
 const MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder')
 const client = require('@mapbox/mapbox-sdk')
@@ -61,7 +62,7 @@ componentDidMount (){
 
 parseResult(obj) {
   let loc = obj.result.geometry.coordinates;
-  this.setState({destination: loc}, this.setDirections)
+  this.setState({destination: loc}, this.getDirections)
 }
 
 setMapCenter(location)  {
@@ -69,6 +70,7 @@ setMapCenter(location)  {
 }
 
 setUserLocation(location) {
+    this.userLocationMarker.remove();
     this.userLocationMarker.setLngLat(location);
     this.userLocationMarker.addTo(this.map);
 }
@@ -79,11 +81,12 @@ setDestination(location){
   this.destinationLocationMarker.addTo(this.map);
 }
 
-setDirections() {
+getDirections() {
   this.setDestination(this.state.destination);
-
   this.directionsService.getDirections({
     profile: 'driving',
+    geometries: 'geojson',
+    steps: true,
     waypoints: [
       {
         coordinates: this.state.userLngLat
@@ -96,8 +99,36 @@ setDirections() {
   })
   .send()
   .then(response => {
-      console.log(response.body)
+      let route=response.body.routes[0]
+      this.drawRoute(route);
   })
+}
+
+drawRoute(route) {
+  this.map.addLayer({
+    "id": "route",
+    "type": "line",
+    "source": {
+      "type": "geojson",
+      "data": {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "LineString",
+          "coordinates": route.geometry.coordinates
+        }
+      }
+    },
+    "layout": {
+      "line-join": "round",
+      "line-cap": "round"
+    },
+    "paint": {
+      "line-color": "#f114d8",
+      "line-width": 8
+    }
+  })
+  // console.log(route)
 }
 
 render(){
