@@ -1,5 +1,6 @@
 {
   "name": "react-lawn",
+  "homepage": "http://halbeckerman.net/react-lawn",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

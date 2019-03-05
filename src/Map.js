@@ -44,26 +44,30 @@ componentDidMount (){
       controls: {profileSwitcher: false},
       bannerInstructions: true
     });
-    myApp.map.addControl(myApp.directions, 'top-left');
+    // myApp.map.addControl(myApp.directions, 'top-left');
     myApp.setState({userLngLat: loc})
-    myApp.directions.on('origin', function(ev) {
-      let origin = ev.feature.geometry.coordinates;
+    myApp.directions.on('origin', function(event) {
+      let origin = event.feature.geometry.coordinates;
       myApp.directions.options.geocoder.proximity = origin;
       myApp.setState({userLngLat: origin})
     })
-    myApp.directions.on('destination', function(ev) {
-      // ev.preventDefault();
-      myApp.getDirections(ev.feature.geometry.coordinates)
-      // console.log(ev.feature.geometry.coordinates)
-    })
+    // let destListener = myApp.directions.on('destination', function(event) {
+    //   myApp.getDirections(event.feature.geometry.coordinates)
+    // })
     myApp.directions.setOrigin(loc)
     myApp.setMapCenter(loc);
     myApp.setUserLocation(loc);
-
+    myApp.addDestinationBox();
   })
 }
 
-
+addDestinationBox(){
+  this.destinationBox = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    placeholder: "Where to you want to mow?"
+  })
+  this.map.addControl(this.destinationBox, 'top-left')
+}
 
 setMapCenter(location)  {
     this.map.setCenter(location);
@@ -98,39 +102,46 @@ getDirections(destination) {
   })
   .send()
   .then(response => {
-      let route=response.body.routes[0]
-      this.drawRoute(route);
-      // let nearEndWaypoint = route.geometry.coordinates[route.geometry.coorsinates.length - 2]
-      // this.map.addWaypoint(1, nearEndWaypoint)
+      let route=response.body.routes[0].geometry.coordinates;
+      let nearEndpoint= route.slice(-2,-1);
+      let myMap =this.map;
+      let directionsControl= this.directions
+      // this.directions.addWaypoint(1, nearEndpoint[0]);
+
+      myMap.removeControl(directionsControl)
   })
 }
 
-drawRoute(altRoute) {
-  this.map.addLayer({
-    "id": "route",
-    "type": "line",
-    "source": {
-      "type": "geojson",
-      "data": {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-          "type": "LineString",
-          "coordinates": altRoute.geometry.coordinates
-        }
-      }
-    },
-    "layout": {
-      "line-join": "round",
-      "line-cap": "round"
-    },
-    "paint": {
-      "line-color": "#f114d8",
-      "line-width": 8
-    }
-  })
-  console.log(this.map)
-}
+// drawRoute(altRoute) {
+//   if(this.routeLayer!==null){
+//     // this.map.removeLayer("altRoute");
+//     // this.map.removeSource("altRoute");
+//     console.log(this.map.getLayer("altRoute "));
+//   }
+//   this.routeLayer = this.map.addLayer({
+//     "id": "altRoute",
+//     "type": "line",
+//     "source": {
+//       "type": "geojson",
+//       "data": {
+//         "type": "Feature",
+//         "properties": {},
+//         "geometry": {
+//           "type": "LineString",
+//           "coordinates": altRoute.geometry.coordinates
+//         }
+//       }
+//     },
+//     "layout": {
+//       "line-join": "round",
+//       "line-cap": "round"
+//     },
+//     "paint": {
+//       "line-color": "#f114d8",
+//       "line-width": 8
+//     }
+//   })
+// }
 
 render(){
   const mapStyle = {
