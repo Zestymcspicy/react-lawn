@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
-
+import Directions from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
 const MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder')
 const client = require('@mapbox/mapbox-sdk')
@@ -34,36 +34,36 @@ componentDidMount (){
       pitch: 60
     });
     myApp.userLocationMarker= new mapboxgl.Marker()
-    myApp.destinationGeocoder = new MapboxGeocoder({
+
+
+    myApp.directions = new Directions({
       accessToken: mapboxgl.accessToken,
-      proximity: loc,
-    })
-    myApp.destinationGeocoder.on('result', function(ev) {
-      myApp.parseResult(ev)
-      });
-    myApp.map.addControl(myApp.destinationGeocoder, 'top-left')
-
-    // myApp.directions = new Directions({
-    //   accessToken: mapboxgl.accessToken,
-    //   profile: 'mapbox/driving',
-    //   steps: true,
-    //   approaches: ';curb',
-    //   geocoder: {proximity: loc, reverseGeocode: true, },
-    //   controls: {profileSwitcher: false},
-    //   bannerInstructions: true
-    // });
-    // myApp.map.addControl(myApp.directions, 'top-left');
+      profile: 'mapbox/driving',
+      steps: true,
+      geocoder: {proximity: loc, reverseGeocode: true, },
+      controls: {profileSwitcher: false},
+      bannerInstructions: true
+    });
+    myApp.map.addControl(myApp.directions, 'top-left');
     myApp.setState({userLngLat: loc})
-
+    myApp.directions.on('origin', function(ev) {
+      let origin = ev.feature.geometry.coordinates;
+      myApp.directions.options.geocoder.proximity = origin;
+      myApp.setState({userLngLat: origin})
+    })
+    myApp.directions.on('destination', function(ev) {
+      // ev.preventDefault();
+      myApp.getDirections(ev.feature.geometry.coordinates)
+      // console.log(ev.feature.geometry.coordinates)
+    })
+    myApp.directions.setOrigin(loc)
     myApp.setMapCenter(loc);
     myApp.setUserLocation(loc);
+
   })
 }
 
-parseResult(obj) {
-  let loc = obj.result.geometry.coordinates;
-  this.setState({destination: loc}, this.getDirections)
-}
+
 
 setMapCenter(location)  {
     this.map.setCenter(location);
@@ -76,13 +76,12 @@ setUserLocation(location) {
 }
 
 setDestination(location){
-  this.destinationLocationMarker = new mapboxgl.Marker();
-  this.destinationLocationMarker.setLngLat(location);
-  this.destinationLocationMarker.addTo(this.map);
+  this.setState({destination: location});
+
 }
 
-getDirections() {
-  this.setDestination(this.state.destination);
+getDirections(destination) {
+  this.setDestination(destination);
   this.directionsService.getDirections({
     profile: 'driving',
     geometries: 'geojson',
@@ -92,7 +91,7 @@ getDirections() {
         coordinates: this.state.userLngLat
       },
       {
-        coordinates: this.state.destination,
+        coordinates: destination,
         approach: 'curb'
       }
   ]
@@ -101,10 +100,12 @@ getDirections() {
   .then(response => {
       let route=response.body.routes[0]
       this.drawRoute(route);
+      // let nearEndWaypoint = route.geometry.coordinates[route.geometry.coorsinates.length - 2]
+      // this.map.addWaypoint(1, nearEndWaypoint)
   })
 }
 
-drawRoute(route) {
+drawRoute(altRoute) {
   this.map.addLayer({
     "id": "route",
     "type": "line",
@@ -115,7 +116,7 @@ drawRoute(route) {
         "properties": {},
         "geometry": {
           "type": "LineString",
-          "coordinates": route.geometry.coordinates
+          "coordinates": altRoute.geometry.coordinates
         }
       }
     },
@@ -128,7 +129,7 @@ drawRoute(route) {
       "line-width": 8
     }
   })
-  // console.log(route)
+  console.log(this.map)
 }
 
 render(){
