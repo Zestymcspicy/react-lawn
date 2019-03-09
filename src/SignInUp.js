@@ -13,12 +13,12 @@ const config = {
     clientId: "1067332476225-0intu4ukpajk70lvkujju370lpn4qppd.apps.googleusercontent.com"
   };
 firebase.initializeApp(config);
-// const ui = new firebaseui.auth.AuthUI(firebase.auth())
+
 
 class SignInUp extends Component {
-state = {
-  isSignedIn: false
-}
+// state = {
+//   isSignedIn: !!this.props.user
+// }
 signOut = () => firebase.auth().signOut();
 
 
@@ -35,7 +35,7 @@ uiConfig = {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
     (user) => {
       this.props.setUser(user);
-      // this.setState({isSignedIn: !!user});
+
     }
     );
   }
@@ -44,19 +44,21 @@ uiConfig = {
     this.unregisterAuthObserver();
   }
   render(){
+    const signOutStyle = {
+      right: 10,
+      position: 'fixed',
+      top: "4%"
+    }
 
     if (!this.props.isSignedIn) {
       return (
         <div>
-          <h1>My App</h1>
-          <p>Please sign-in:</p>
           <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()}/>
         </div>
       );
     }
     return (
-      <div>
-
+      <div style={signOutStyle}>
         <a onClick={() => firebase.auth().signOut()}>Sign-out</a>
       </div>
       );

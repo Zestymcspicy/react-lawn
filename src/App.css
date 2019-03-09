@@ -23,3 +23,8 @@
     transform: rotate(360deg);
   }
 }
+@media screen and (orientation: landscape) {
+  .mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right{
+    top: 10% !important;
+  }
+}

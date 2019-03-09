@@ -1,4 +1,4 @@
-
+import './OriginLocationBox.css'
 
 export default class OriginLocationBox {
   constructor(originText){
@@ -10,7 +10,7 @@ export default class OriginLocationBox {
     }
     this.map = map;
     this.container = document.createElement('div');
-    this.container.style = ("background-color: white; position: absolute; top: 10px; text-align: center; right: 5%");
+    this.container.className = "current-location-box";
     this.container.textContent = `Your Location: ${this.originText}`;
 
     return this.container

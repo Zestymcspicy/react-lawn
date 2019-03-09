@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import SignInUp from './SignInUp';
+import Header from './Header'
 import './App.css';
 import Map from './Map.js'
-import firebase from 'firebase'
+
 
 
 class App extends Component {
@@ -34,10 +35,14 @@ setUser(user){
 }
 
   render() {
+    const footerStyle = {
+      position: 'absolute',
+      bottom: "0%"
+    }
 
     return (
       <div className="App">
-
+      <Header/>
         <SignInUp
           isSignedIn={this.state.isSignedIn}
           setUser={this.setUser}/>
@@ -45,6 +50,9 @@ setUser(user){
           setDestination={this.setDestination}
           setNearEndpoint={this.setNearEndpoint}
           />
+          <footer style={footerStyle}>
+          Hamburger By Google Inc., <a href="https://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=36335118">Link</a>
+          </footer>
       </div>
     );
   }

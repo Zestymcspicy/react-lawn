@@ -115,7 +115,7 @@ addOriginLocationText(loc) {
 addDestinationBox(loc){
   this.destinationBox = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
-    placeholder: "Where to you want to mow?",
+    placeholder: "Where to?",
     proximity: loc
   })
   this.map.addControl(this.destinationBox, 'top-left');
@@ -163,8 +163,8 @@ getDirections(destination) {
 
 applyDirections(nearEndpoint, destination){
   this.directions.setOrigin(this.state.userLngLat);
+  this.directions.setWaypoint(1, nearEndpoint);
   this.directions.setDestination(destination);
-  this.directions.setWaypoint(-2, nearEndpoint);
 
 }
 
@@ -177,10 +177,12 @@ render(){
     right:"0",
     bottom: "0",
     position:"absolute",
-    width: "100%"
+    width: "100%",
   }
   return(
-    <div ref={el => this.myMap = el} style={mapStyle}/>
+
+      <div ref={el => this.myMap = el} style={mapStyle}/>
+
   )
   }
 
