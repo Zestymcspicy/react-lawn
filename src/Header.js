@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import hamburger from './hamburger.svg'
+import Menu from './Menu.js'
 
 
 
@@ -41,6 +42,8 @@ render(){
   }
   return(
     <div style={styles.header}>
+      <Menu
+        menuOpen={this.state.menuOpen}/>
     <button
     onClick={this.toggleMenu}
     style={styles.burger}>

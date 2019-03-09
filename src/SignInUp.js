@@ -43,7 +43,7 @@ uiConfig = {
   componentWillUnmount() {
     this.unregisterAuthObserver();
   }
-  render(){
+  render() {
     const signOutStyle = {
       right: 10,
       position: 'fixed',
