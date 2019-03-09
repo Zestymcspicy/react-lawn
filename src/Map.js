@@ -165,12 +165,13 @@ applyDirections(nearEndpoint, destination){
   this.directions.setOrigin(this.state.userLngLat);
   this.directions.setDestination(destination);
   this.directions.setWaypoint(-2, nearEndpoint);
-  
+
 }
 
 
 render(){
   const mapStyle = {
+    zIndex: -1,
     top: "10%",
     left:"0",
     right:"0",
