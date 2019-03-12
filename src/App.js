@@ -3,15 +3,17 @@ import SignInUp from './SignInUp';
 import Header from './Header';
 import './App.css';
 import Map from './Map.js';
-import {checkUser} from './firestore.js'
-
-
+import { checkUser } from './firestore.js'
+import { DestinationProvider } from './Context.js'
 
 class App extends Component {
   constructor(props){
     super(props)
     this.state = {
-      destination: [],
+      destination: {
+        coords: [],
+        place_name: "No Place Name"
+      },
       nearEndpoint: [],
       user: {},
       originText: "",
@@ -57,17 +59,22 @@ async setUser(user){
   }
 }
 
+
+
   render() {
     const footerStyle = {
       position: 'absolute',
       bottom: "0%"
     }
+    const destination = this.state.destination;
 
     return (
       <div className="App">
-      <Header
+        <DestinationProvider value={destination}>
+          <Header
         showOriginBox={this.state.showOriginBox}
         originText={this.state.originText}/>
+        </DestinationProvider>
         <SignInUp
           isSignedIn={this.state.isSignedIn}
           setUser={this.setUser}/>

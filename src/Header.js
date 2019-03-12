@@ -16,6 +16,10 @@ export default class Header extends Component{
   this.toggleMenu = this.toggleMenu.bind(this)
 }
 
+  saveDestination(){
+    console.log("isthiswhatyouwanted?")
+  }
+
   toggleMenu(){
     this.state.menuOpen?
     this.setState({menuOpen: false}):
@@ -46,8 +50,8 @@ render(){
   }
   return(
     <div style={styles.header}>
-      <Menu        
-        toggleMenu={this.toggleMenu}
+      <Menu
+        saveDestination={this.saveDestination}
         menuOpen={this.state.menuOpen}/>
     <button
     onClick={this.toggleMenu}

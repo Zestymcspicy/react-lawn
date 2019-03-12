@@ -69,7 +69,11 @@ addMap() {
       pitch: 60
     });
     myApp._map.on('click', function(event) {
-      myApp.getDirections([event.lngLat.lng, event.lngLat.lat]);
+      const destination = {
+        place_name: null,
+        coords: [event.lngLat.lng, event.lngLat.lat]
+      }
+      myApp.getDirections(destination);
     })
     this.userLocationMarker= new mapboxgl.Marker()
   }
@@ -125,7 +129,11 @@ addDestinationBox(loc){
   this._map.addControl(destinationBox, 'top-left');
   const myApp = this;
   destinationBox.on("result", function(ev) {
-    let userDestination = ev.result.geometry.coordinates;
+    console.log(ev.result)
+    let userDestination = {
+      place_name: ev.result.place_name,
+      coords: ev.result.geometry.coordinates
+    };
     myApp.getDirections(userDestination);
   })
 }
@@ -152,7 +160,7 @@ getDirections(destination) {
         coordinates: this.state.userLngLat
       },
       {
-        coordinates: destination,
+        coordinates: destination.coords,
         approach: 'curb'
       }
   ]
@@ -162,7 +170,7 @@ getDirections(destination) {
       let route = response.body.routes[0].geometry.coordinates;
       let nearEndpoint = route.slice(-2,-1)[0];
       this.props.setNearEndpoint(nearEndpoint);
-      this.applyDirections(nearEndpoint, destination);
+      this.applyDirections(nearEndpoint, destination.coords);
   })
 }
 
@@ -213,6 +221,7 @@ export function openChangeOriginBox() {
   this.props.toggleOriginBox();
 } else {
   this._map.removeControl(changeOriginBox);
+  changeOriginBox = {};
   this.props.toggleOriginBox();
 }
 }

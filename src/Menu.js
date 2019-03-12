@@ -1,12 +1,33 @@
 import React, {Component} from 'react'
 import {openChangeOriginBox} from './Map.js'
-
+import SaveDestinationBox from './SaveDestinationBox.js'
 
 class Menu extends Component{
+  constructor(props){
+  super(props)
+this.state ={
+  saveBoxOpen: false,
+  savedListOpen: false
+}
+this.toggleSaveBox = this.toggleSaveBox.bind(this);
+this.toggleSavedList = this.toggleSavedList.bind(this);
 
+}
 originButtonClick()  {
     openChangeOriginBox()
-  }
+}
+
+toggleSavedList(){
+  this.state.savedListOpen?
+  this.setState({savedListOpen: false}):
+  this.setState({savedListOpen: true})
+}
+
+toggleSaveBox(){
+  this.state.saveBoxOpen?
+  this.setState({saveBoxOpen: false}):
+  this.setState({saveBoxOpen: true})
+}
 
   render() {
     const styles = {
@@ -38,16 +59,21 @@ originButtonClick()  {
         <ol style={styles.list}>
           <li style={styles.listItem}>
             <button
-
               onClick={this.originButtonClick}
               style={styles.button}>
-            Change Origin
+              Change Origin
             </button>
           </li>
           <li style={styles.listItem}>
-            <button style={styles.button}>
-            Save Destination
+            <button
+              onClick={this.toggleSaveBox}
+              style={styles.button}>
+              Save Destination
             </button>
+            {this.state.saveBoxOpen?
+              <SaveDestinationBox/>
+              :null
+            }
           </li>
           <li style={styles.listItem}>
             <button style={styles.button}>
@@ -56,8 +82,8 @@ originButtonClick()  {
           </li>
         </ol>
       </div>
-    )
+    )}
   }
-}
+
 
 export default Menu;
