@@ -42,9 +42,9 @@ setNearEndpoint(nearEndpoint) {
   this.setState({nearEndpoint});
 }
 
-setUser(user){
+async setUser(user){
   if (user!==null) {
-    checkUser(user)
+     user = await checkUser(user)
       this.setState({
         user: user,
         isSignedIn: !!user

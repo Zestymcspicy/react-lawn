@@ -2,7 +2,7 @@ import { firestore } from "./SignInUp.js"
 
 
 function checkUser(incomingUser) {
-  firestore.collection("users").get().then((response) => {
+  return firestore.collection("users").get().then((response) => {
     if(response===null||undefined) {
       addUser(incomingUser)
     }
@@ -19,6 +19,7 @@ function checkUser(incomingUser) {
       if(userArr.length===0){
         addUser(incomingUser)
       } else {
+        console.log(userArr[0])
         return userArr[0];
       }
     })
