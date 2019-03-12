@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-// import uiStyles from 'firebase/dist/firebaseui.css'
-// const firebaseui = require('firebaseui');
 const config = {
     apiKey: "AIzaSyBLylb4pCBdTnEIU1yWWC2Pnr9pLHHn1v0",
     authDomain: "lawnmower-maps.firebaseapp.com",
@@ -13,12 +11,10 @@ const config = {
     clientId: "1067332476225-0intu4ukpajk70lvkujju370lpn4qppd.apps.googleusercontent.com"
   };
 firebase.initializeApp(config);
-
+export const firestore = firebase.firestore()
 
 class SignInUp extends Component {
-// state = {
-//   isSignedIn: !!this.props.user
-// }
+
 signOut = () => firebase.auth().signOut();
 
 
@@ -35,7 +31,6 @@ uiConfig = {
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
     (user) => {
       this.props.setUser(user);
-
     }
     );
   }

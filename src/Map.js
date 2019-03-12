@@ -2,19 +2,18 @@ import React, { Component } from 'react';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import Directions from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
-import OriginLocationBox from './OriginLocationBox';
 const MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder')
 const client = require('@mapbox/mapbox-sdk')
 const mbxDirections = require('@mapbox/mapbox-sdk/services/directions')
 const mbxGeocoder = require('@mapbox/mapbox-sdk/services/geocoding')
 
+let destinationBox;
 
 class Map extends Component {
   constructor(props){
     super(props)
     this.state = {
       userLngLat: [],
-      originText: null
     }
     const myApp = this;
     this.geoLocateOptions={enableHighAccuracy: true};
@@ -23,6 +22,7 @@ class Map extends Component {
     this.directionsService = mbxDirections(this.baseClient);
     this.geolocationService = mbxGeocoder(this.baseClient);
     this.applyDirections = this.applyDirections.bind(this);
+    openChangeOriginBox = openChangeOriginBox.bind(this)
   }
 
 
@@ -61,13 +61,16 @@ initAll(loc) {
 addMap() {
   const myApp =this;
     mapboxgl.accessToken = myApp.mbxToken;
-    myApp.map = new mapboxgl.Map({
+    myApp._map = new mapboxgl.Map({
       container: myApp.myMap,
       style: 'mapbox://styles/mapbox/navigation-guidance-day-v2',
       zoom: 12,
       boxZoom: true,
       pitch: 60
     });
+    myApp._map.on('click', function(event) {
+      myApp.getDirections([event.lngLat.lng, event.lngLat.lat]);
+    })
     this.userLocationMarker= new mapboxgl.Marker()
   }
 
@@ -84,7 +87,7 @@ addDirections(loc) {
         instructions: false
       }
     });
-    this.map.addControl(this.directions);
+    this._map.addControl(this.directions);
     this.setState({userLngLat: loc})
     this.directions.setOrigin(loc)
     const myApp = this;
@@ -93,6 +96,7 @@ addDirections(loc) {
       myApp.directions.options.geocoder.proximity = origin;
     })
   }
+
 
 
 addOriginLocationText(loc) {
@@ -106,34 +110,34 @@ addOriginLocationText(loc) {
   }).send()
   .then(response => {
     const newOriginText = response.body.features[0].place_name;
-    myApp.setState({originText: newOriginText},() => this.map.addControl(new OriginLocationBox(newOriginText), 'top-right'))
+    myApp.props.setOriginText(newOriginText);
   })
+}
+}
 
-}
-}
 
 addDestinationBox(loc){
-  this.destinationBox = new MapboxGeocoder({
+  destinationBox = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     placeholder: "Where to?",
     proximity: loc
   })
-  this.map.addControl(this.destinationBox, 'top-left');
+  this._map.addControl(destinationBox, 'top-left');
   const myApp = this;
-  this.destinationBox.on("result", function(ev) {
+  destinationBox.on("result", function(ev) {
     let userDestination = ev.result.geometry.coordinates;
     myApp.getDirections(userDestination);
   })
 }
 
 setMapCenter(location)  {
-    this.map.setCenter(location);
+    this._map.setCenter(location);
 }
 
 setUserLocation(location) {
     this.userLocationMarker.remove();
     this.userLocationMarker.setLngLat(location);
-    this.userLocationMarker.addTo(this.map);
+    this.userLocationMarker.addTo(this._map);
 }
 
 getDirections(destination) {
@@ -142,6 +146,7 @@ getDirections(destination) {
     profile: 'driving',
     geometries: 'geojson',
     steps: true,
+    bannerInstructions: true,
     waypoints: [
       {
         coordinates: this.state.userLngLat
@@ -188,4 +193,22 @@ render(){
 
 }
 
-export default Map;
+let changeOriginBox;
+export function openChangeOriginBox() {
+  this.props.toggleOriginBox()
+  changeOriginBox = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    placeholder: "New origin?",
+    className: "mapboxgl-ctrl"
+  })
+  const myMap = this;
+  this._map.addControl(changeOriginBox);
+  changeOriginBox.on("result", function(pos) {
+    const loc = pos.result.geometry.coordinates
+    myMap._map.removeControl(changeOriginBox)
+    myMap.addOriginLocationText(loc);
+    myMap.initAll(loc);
+    myMap.props.toggleOriginBox();
+  })
+}
+export default Map

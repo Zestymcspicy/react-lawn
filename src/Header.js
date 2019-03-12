@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import hamburger from './hamburger.svg'
+import OriginLocationBox from './OriginLocationBox.js'
 import Menu from './Menu.js'
 
 
@@ -27,10 +28,13 @@ render(){
       height: 80,
       textAlign: 'center',
       top: 0,
+      fontSize: "100%"
     },
     title: {
-      paddingTop: 17,
-      margin: 0,
+      paddingTop: 10,
+      margin: "0 auto",
+      width: "50%",
+
     },
     burger: {
       border: 'none',
@@ -42,7 +46,8 @@ render(){
   }
   return(
     <div style={styles.header}>
-      <Menu
+      <Menu        
+        toggleMenu={this.toggleMenu}
         menuOpen={this.state.menuOpen}/>
     <button
     onClick={this.toggleMenu}
@@ -50,6 +55,11 @@ render(){
     <img src={hamburger} alt="hamburger"/>
     </button>
       <h2 style={styles.title}>Where you mowing?</h2>
+      {this.props.showOriginBox?
+      <OriginLocationBox
+        originText={this.props.originText}/>
+      :null
+    }
     </div>
     )
   }

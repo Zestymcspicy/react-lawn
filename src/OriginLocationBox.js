@@ -1,25 +1,22 @@
-import './OriginLocationBox.css'
+import React from 'react';
 
-export default class OriginLocationBox {
-  constructor(originText){
-    this.originText = originText;
+
+export default function OriginLocationBox(props) {
+  const styles={
+    box: {
+      backgroundColor: "#FFFFFF",
+      fontSize: "12px",
+      position: "absolute",
+      maxWidth: "175px",
+      width: "45%",
+      right: 10,
+      top: 85,
+    }
   }
-  onAdd(map) {
-    this.customStyles = {
-      backgroundColor: "white"
-    }
-    this.map = map;
-    this.container = document.createElement('div');
-    this.container.className = "current-location-box";
-    this.container.textContent = `Your Location: ${this.originText}`;
+    return(
+      <div style={styles.box}>
+      <span>Your Origin: {props.originText}</span>
+      </div>
+    )
 
-    return this.container
-
-    }
-
-
-    onRemove() {
-        this.container.parentNode.removeChild(this.container);
-        this.map = undefined;
-    }
-}
+  }
