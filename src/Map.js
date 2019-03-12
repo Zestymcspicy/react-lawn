@@ -190,19 +190,19 @@ render(){
 
   )
   }
-
 }
 
 let changeOriginBox;
+
 export function openChangeOriginBox() {
-  this.props.toggleOriginBox()
-  changeOriginBox = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    placeholder: "New origin?",
-    className: "mapboxgl-ctrl"
-  })
-  const myMap = this;
+  if(this.props.showOriginBox===true){
+    changeOriginBox = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      placeholder: "New origin?",
+      className: "mapboxgl-ctrl"
+    });
   this._map.addControl(changeOriginBox);
+  const myMap = this;
   changeOriginBox.on("result", function(pos) {
     const loc = pos.result.geometry.coordinates
     myMap._map.removeControl(changeOriginBox)
@@ -210,5 +210,10 @@ export function openChangeOriginBox() {
     myMap.initAll(loc);
     myMap.props.toggleOriginBox();
   })
+  this.props.toggleOriginBox();
+} else {
+  this._map.removeControl(changeOriginBox);
+  this.props.toggleOriginBox();
+}
 }
 export default Map

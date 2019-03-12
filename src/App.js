@@ -72,7 +72,7 @@ async setUser(user){
           isSignedIn={this.state.isSignedIn}
           setUser={this.setUser}/>
         <Map
-          showOriginBox={this.showOriginBox}
+          showOriginBox={this.state.showOriginBox}
           toggleOriginBox={this.toggleOriginBox}
           setOriginText={this.setOriginText}
           setDestination={this.setDestination}

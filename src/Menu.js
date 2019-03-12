@@ -4,12 +4,11 @@ import {openChangeOriginBox} from './Map.js'
 
 class Menu extends Component{
 
+originButtonClick()  {
+    openChangeOriginBox()
+  }
 
   render() {
-    function originButtonClick() {
-      // this.props.toggleMenu();
-      openChangeOriginBox()
-    }
     const styles = {
       list: {
         listStyle : 'none',
@@ -40,7 +39,7 @@ class Menu extends Component{
           <li style={styles.listItem}>
             <button
 
-              onClick={originButtonClick}
+              onClick={this.originButtonClick}
               style={styles.button}>
             Change Origin
             </button>
