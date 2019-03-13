@@ -65,7 +65,7 @@ async setUser(user){
 saveDestination(){
   let savedLocations = this.state.user.savedLocations
   if(savedLocations.every(x=>x.coords!==this.state.destination.coords)){
-    savedLocations.push(this.state.destination.coords);
+    savedLocations.push(this.state.destination);
     this.setState({savedLocations})
   } else {
     alert("You've already saved this location.")
