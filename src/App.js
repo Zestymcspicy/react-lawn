@@ -12,18 +12,21 @@ class App extends Component {
     this.state = {
       destination: {
         coords: [],
-        place_name: "No Place Name"
+        place_name: "No Place Name",
+        nickname: null
       },
       nearEndpoint: [],
       user: {},
       originText: "",
-      showOriginBox: true
+      showOriginBox: true,
+      saveDestination: this.saveDestination.bind(this)
     }
     this.setNearEndpoint = this.setNearEndpoint.bind(this);
     this.setDestination = this.setDestination.bind(this);
     this.setUser = this.setUser.bind(this);
     this.setOriginText = this.setOriginText.bind(this);
     this.toggleOriginBox = this.toggleOriginBox.bind(this);
+    this.saveDestination = this.saveDestination.bind(this);
   }
 
 toggleOriginBox(){
@@ -59,7 +62,15 @@ async setUser(user){
   }
 }
 
-
+saveDestination(){
+  let savedLocations = this.state.user.savedLocations
+  if(savedLocations.every(x=>x.coords!==this.state.destination.coords)){
+    savedLocations.push(this.state.destination.coords);
+    this.setState({savedLocations})
+  } else {
+    alert("You've already saved this location.")
+  }
+}
 
   render() {
     const footerStyle = {
@@ -68,9 +79,10 @@ async setUser(user){
     }
     const destination = this.state.destination;
 
+
     return (
       <div className="App">
-        <DestinationProvider value={destination}>
+        <DestinationProvider value={this.state}>
           <Header
         showOriginBox={this.state.showOriginBox}
         originText={this.state.originText}/>

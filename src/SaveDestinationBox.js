@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
-import { DestinationConsumer } from './Context.js'
+import { DestinationContext } from './Context.js'
 
-export default class SaveDestinationBox extends Component {
+class SaveDestinationBox extends Component {
+
+
   render(){
+
     return(
-        <DestinationConsumer>
-        {(destination) => (
-          <p>{destination.place_name}</p>
-        )
-        }
-        </DestinationConsumer>
+        <div>
+          {this.context.destination.coords.length===0?
+          <p>You haven't selected a destination</p>
+          :
+            <div>
+            <p>{this.context.destination.place_name}</p>
+            <input
+              placeholder="Location Nickname"
+              type="text"/>
+            <button onClick={this.context.saveDestination}>Save</button>
+            </div>}
+      </div>
     )
   }
 }
+
+SaveDestinationBox.contextType = DestinationContext;
+export default SaveDestinationBox;
