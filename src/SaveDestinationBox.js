@@ -24,8 +24,19 @@ class SaveDestinationBox extends Component {
 
 
   render(){
+    const styles = {
+      closeButton: {
+        border:"none",
+        backgroundColor:"inherit"
+      }
+    }
     return(
         <div>
+          <button
+            style={styles.closeButton}
+            onClick={this.props.toggleSaveBox}>
+            X
+          </button>
           {this.context.destination.coords.length===0?
           <p>You haven't selected a destination</p>
           :
@@ -37,7 +48,10 @@ class SaveDestinationBox extends Component {
                 placeholder="Location Nickname"
                 value={this.state.nickname}
                 type="text"/>
-              <input type="submit" value="Save"/>
+              <input
+                style={styles.closeButton}
+                type="submit"
+                value="Save"/>
             </form>
           </div>}
       </div>
