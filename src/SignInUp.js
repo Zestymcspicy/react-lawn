@@ -38,6 +38,7 @@ uiConfig = {
   componentWillUnmount() {
     this.unregisterAuthObserver();
   }
+
   render() {
     const signOutStyle = {
       right: 10,

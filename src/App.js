@@ -3,7 +3,7 @@ import SignInUp from './SignInUp';
 import Header from './Header';
 import './App.css';
 import Map from './Map.js';
-import { checkUser } from './firestore.js'
+import { checkUser, dbSaveDestination } from './firestore.js'
 import { DestinationProvider } from './Context.js'
 
 class App extends Component {
@@ -62,11 +62,16 @@ async setUser(user){
   }
 }
 
-saveDestination(){
-  let savedLocations = this.state.user.savedLocations
+saveDestination(nickname){
+  let savedLocations = this.state.user.savedLocations;
   if(savedLocations.every(x=>x.coords!==this.state.destination.coords)){
-    savedLocations.push(this.state.destination);
-    this.setState({savedLocations})
+    let location = this.state.destination;
+    location.nickname = nickname;
+    savedLocations.push(location);
+    let user = this.state.user;
+    user.savedLocations = savedLocations;
+    this.setState({user});
+    dbSaveDestination(user);
   } else {
     alert("You've already saved this location.")
   }
