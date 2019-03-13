@@ -66,13 +66,13 @@ toggleSaveBox(){
           </li>
           <li style={styles.listItem}>
             <button
-              toggleSaveBox={this.toggleSaveBox}
               onClick={this.toggleSaveBox}
               style={styles.button}>
               Save Destination
             </button>
             {this.state.saveBoxOpen?
-              <SaveDestinationBox/>
+              <SaveDestinationBox
+              toggleSaveBox={this.toggleSaveBox}/>
               :null
             }
           </li>

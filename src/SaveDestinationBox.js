@@ -8,15 +8,22 @@ class SaveDestinationBox extends Component {
       nickname: ""
     }
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    event.preventDefault()
     this.setState({nickname: event.target.value});
   }
 
-  render(){
+  handleSubmit(event){
+    event.preventDefault()
     const nickname = this.state.nickname;
+    this.context.saveDestination(nickname);
+    this.props.toggleSaveBox();
+  }
+
+
+  render(){
     return(
         <div>
           {this.context.destination.coords.length===0?
@@ -24,7 +31,7 @@ class SaveDestinationBox extends Component {
           :
           <div>
             <p>{this.context.destination.place_name}</p>
-            <form onSubmit={() => this.context.saveDestination(nickname)}>
+            <form onSubmit={this.handleSubmit}>
               <input
                 onChange={this.handleChange}
                 placeholder="Location Nickname"
