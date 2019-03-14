@@ -22,7 +22,9 @@ class Map extends Component {
     this.directionsService = mbxDirections(this.baseClient);
     this.geolocationService = mbxGeocoder(this.baseClient);
     this.applyDirections = this.applyDirections.bind(this);
-    openChangeOriginBox = openChangeOriginBox.bind(this)
+    // this.getDirections = this.getDirections.bind(this);
+    openChangeOriginBox = openChangeOriginBox.bind(this);
+    setSavedDirections = setSavedDirections.bind(this);
   }
 
 
@@ -200,8 +202,8 @@ render(){
   }
 }
 
-let changeOriginBox;
 
+let changeOriginBox;
 export function openChangeOriginBox() {
   if(this.props.showOriginBox===true){
     changeOriginBox = new MapboxGeocoder({
@@ -225,4 +227,9 @@ export function openChangeOriginBox() {
   this.props.toggleOriginBox();
 }
 }
+
+export function setSavedDirections(destination) {
+  this.getDirections(destination);
+}
+
 export default Map

@@ -8,13 +8,10 @@ function checkUser(incomingUser) {
     }
     const dataArray = [];
       response.forEach(doc => {
-
         const data = doc.data()
         dataArray.push(data)
       })
-      console.log(dataArray)
       if (dataArray.length===0){
-
         addUser(incomingUser);
       }
       const userArr = dataArray.filter(x=> x.uid===incomingUser.uid);
@@ -44,7 +41,6 @@ function addUser(user) {
   }
   firestore.collection("users").doc(user.uid).set(newUser)
   .then(function(docRef) {
-    console.log("Document written with ID: ", docRef);
     return newUser
   })
   .catch(function(error) {

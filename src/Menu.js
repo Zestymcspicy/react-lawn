@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import {openChangeOriginBox} from './Map.js'
 import SaveDestinationBox from './SaveDestinationBox.js'
+import SavedListBox from './SavedListBox.js'
+
 
 class Menu extends Component{
   constructor(props){
@@ -77,9 +79,14 @@ toggleSaveBox(){
             }
           </li>
           <li style={styles.listItem}>
-            <button style={styles.button}>
-            Load Your Destinations
+            <button style={styles.button}
+              onClick={this.toggleSavedList}>
+              Load Your Destinations
             </button>
+            {this.state.savedListOpen?
+            <SavedListBox
+              toggleSavedList={this.toggleSavedList}/>
+            :null}
           </li>
         </ol>
       </div>
