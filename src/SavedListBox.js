@@ -43,7 +43,11 @@ class SavedListBox extends Component{
         style={styles.button}>
         Set Destination
         </button>
-        <button style={styles.button}>Delete Destination</button>
+        <button
+        onClick={() => this.context.deleteDestination(x)}
+        style={styles.button}>
+        Delete Destination
+        </button>
       </div>
     </li>
   )}

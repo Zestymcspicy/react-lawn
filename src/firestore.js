@@ -23,7 +23,7 @@ function checkUser(incomingUser) {
     })
   }
 
-export function dbSaveDestination(user){
+function dbChangeDestinations(user){
   const userRef = firestore.collection("users").doc(user.uid);
   userRef.set({
     savedLocations: user.savedLocations
@@ -52,4 +52,4 @@ function addUser(user) {
 
 
 
-export { checkUser }
+export { checkUser, dbChangeDestinations }

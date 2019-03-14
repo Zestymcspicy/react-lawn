@@ -3,7 +3,7 @@ import SignInUp from './SignInUp';
 import Header from './Header';
 import './App.css';
 import Map from './Map.js';
-import { checkUser, dbSaveDestination } from './firestore.js'
+import { checkUser, dbChangeDestinations } from './firestore.js'
 import { DestinationProvider } from './Context.js'
 
 class App extends Component {
@@ -19,7 +19,8 @@ class App extends Component {
       user: {},
       originText: "",
       showOriginBox: true,
-      saveDestination: this.saveDestination.bind(this)
+      saveDestination: this.saveDestination.bind(this),
+      deleteDestination: this.deleteDestination.bind(this)
     }
     this.setNearEndpoint = this.setNearEndpoint.bind(this);
     this.setDestination = this.setDestination.bind(this);
@@ -64,25 +65,34 @@ async setUser(user){
 
 saveDestination(nickname){
   let savedLocations = this.state.user.savedLocations;
-  if(savedLocations.every(x=>x.coords!==this.state.destination.coords)){
+  if(savedLocations.every(x => x.coords!==this.state.destination.coords)){
     let location = this.state.destination;
     location.nickname = nickname;
     savedLocations.push(location);
     let user = this.state.user;
     user.savedLocations = savedLocations;
     this.setState({user});
-    dbSaveDestination(user);
+    dbChangeDestinations(user);
   } else {
     alert("You've already saved this location.")
   }
 }
 
+deleteDestination(destination) {
+  let savedLocations = this.state.user.savedLocations;
+  let user = this.state.user;
+  savedLocations = savedLocations.filter(x => destination.coords!==x.coords);
+  user.savedLocations = savedLocations;
+  this.setState({user})
+  dbChangeDestinations(user)
+}
+
   render() {
     const footerStyle = {
       position: 'absolute',
-      bottom: "0%"
+      bottom: "0%",
+      fontSize: 12
     }
-    const destination = this.state.destination;
 
 
     return (
