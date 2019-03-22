@@ -40,10 +40,16 @@ uiConfig = {
   }
 
   render() {
-    const signOutStyle = {
-      right: 10,
-      position: 'fixed',
-      top: "4%"
+    const styles = {
+      signOut: {
+        right: 10,
+        position: 'fixed',
+        top: "4%"},
+      button: {
+        width: "100%",
+        border: "none",
+        backgroundColor: "transparent"
+      }
     }
 
     if (!this.props.isSignedIn) {
@@ -54,8 +60,11 @@ uiConfig = {
       );
     }
     return (
-      <div style={signOutStyle}>
-        <a onClick={() => firebase.auth().signOut()}>Sign-out</a>
+      <div style={styles.signOut}>
+        <button
+          onClick={() => firebase.auth().signOut()}
+          style={styles.button}>
+          Sign-out</button>
       </div>
       );
   }

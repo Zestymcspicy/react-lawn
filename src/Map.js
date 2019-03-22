@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { TurnByTurn } from './TurnByTurn.js';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import Directions from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
@@ -13,16 +14,17 @@ class Map extends Component {
   constructor(props){
     super(props)
     this.state = {
+      showStartButton: false,
       userLngLat: [],
     }
-    const myApp = this;
     this.geoLocateOptions={enableHighAccuracy: true};
     this.mbxToken = 'pk.eyJ1IjoiemVzdHltY3NwaWN5IiwiYSI6ImNqc281djVneTA5MzAzeXJ2ZWVoMjhmdzMifQ.uT5Hz9PEBvuLwVrZkrkp8A'
     this.baseClient = client({ accessToken: this.mbxToken});
     this.directionsService = mbxDirections(this.baseClient);
     this.geolocationService = mbxGeocoder(this.baseClient);
     this.applyDirections = this.applyDirections.bind(this);
-    // this.getDirections = this.getDirections.bind(this);
+    this.beginNavigation = this.beginNavigation.bind(this);
+    this.test = this.test.bind(this)
     openChangeOriginBox = openChangeOriginBox.bind(this);
     setSavedDirections = setSavedDirections.bind(this);
   }
@@ -52,13 +54,14 @@ noGeoStart(){
   this.initAll(loc);
 }
 
-initAll(loc) {
-  this.addMap()
+async initAll(loc) {
+  await this.addMap();
   this.addDirections(loc)
   this.setMapCenter(loc);
   this.setUserLocation(loc);
   this.addDestinationBox(loc);
-}
+  this.addGeolocator();
+};
 
 addMap() {
   const myApp =this;
@@ -66,18 +69,20 @@ addMap() {
     myApp._map = new mapboxgl.Map({
       container: myApp.myMap,
       style: 'mapbox://styles/mapbox/navigation-guidance-day-v2',
-      zoom: 12,
+      zoom: 14,
       boxZoom: true,
       pitch: 60
     });
     myApp._map.on('click', function(event) {
-      const destination = {
-        place_name: null,
-        coords: [event.lngLat.lng, event.lngLat.lat]
-      }
-      myApp.getDirections(destination);
+      event.preventDefault()
+      // const destination = {
+      //   place_name: null,
+      //   coords: [event.lngLat.lng, event.lngLat.lat]
+      // }
+      // myApp.getDirections(destination);
     })
     this.userLocationMarker= new mapboxgl.Marker()
+    this.destinationMarker = new mapboxgl.Marker()
   }
 
 addDirections(loc) {
@@ -85,18 +90,22 @@ addDirections(loc) {
       accessToken: mapboxgl.accessToken,
       profile: 'mapbox/driving',
       steps: true,
+      interactive: false,
       geocoder: {proximity: loc, reverseGeocode: true},
       bannerInstructions: true,
       controls: {
         inputs: false,
         profileSwitcher: false,
-        instructions: false
+        instructions: true
       }
     });
     this._map.addControl(this.directions);
     this.setState({userLngLat: loc})
     this.directions.setOrigin(loc)
     const myApp = this;
+    myApp._map.on('click', function(event) {
+      event.preventDefault()
+    })
     this.directions.on('origin', function(event) {
       let origin = event.feature.geometry.coordinates;
       myApp.directions.options.geocoder.proximity = origin;
@@ -123,15 +132,14 @@ addOriginLocationText(loc) {
 
 
 addDestinationBox(loc){
-  destinationBox = new MapboxGeocoder({
+  this.destinationBox = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     placeholder: "Where to?",
     proximity: loc
   })
-  this._map.addControl(destinationBox, 'top-left');
+  this._map.addControl(this.destinationBox, 'top-left');
   const myApp = this;
-  destinationBox.on("result", function(ev) {
-    console.log(ev.result)
+  this.destinationBox.on("result", function(ev) {
     let userDestination = {
       place_name: ev.result.place_name,
       coords: ev.result.geometry.coordinates
@@ -151,12 +159,17 @@ setUserLocation(location) {
 }
 
 getDirections(destination) {
+  this.destinationMarker.remove();
+  this.destinationMarker.setLngLat(destination.coords);
+  this.destinationMarker.addTo(this._map);
+  this.boundsObject = [this.state.userLngLat, destination.coords]
   this.props.setDestination(destination);
   this.directionsService.getDirections({
     profile: 'driving',
     geometries: 'geojson',
     steps: true,
     bannerInstructions: true,
+    voiceInstructions: true,
     waypoints: [
       {
         coordinates: this.state.userLngLat
@@ -169,18 +182,72 @@ getDirections(destination) {
   })
   .send()
   .then(response => {
-      let route = response.body.routes[0].geometry.coordinates;
-      let nearEndpoint = route.slice(-2,-1)[0];
-      this.props.setNearEndpoint(nearEndpoint);
-      this.applyDirections(nearEndpoint, destination.coords);
+      TurnByTurn.map = this._map
+      TurnByTurn.directions = response.body.routes[0];
+      let steps = response.body.routes[0].legs.map(x => x.steps)
+      console.log(steps)
+      let directions = steps[0].map(x => {
+        const direction = {
+          instruction: x.maneuver.instruction
+        }
+        return direction
+      })
+      this.props.setDirections(directions)
+      TurnByTurn.readDirections();
+      TurnByTurn.addLine();
+      let coordinates = response.body.routes[0].geometry.coordinates
+      let bounds = coordinates.reduce(function(bounds, coord) {
+        return bounds.extend(coord);
+      }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]))
+      this._map.fitBounds(bounds, {padding: 20})
+      this.toggleStartButton()
+      this.applyDirections(destination.coords);
   })
 }
 
-applyDirections(nearEndpoint, destination){
-  this.directions.setOrigin(this.state.userLngLat);
-  this.directions.setWaypoint(1, nearEndpoint);
-  this.directions.setDestination(destination);
+addGeolocator() {
+  this.activeLocator = new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true
+    },
+    trackUserLocation: true,
+    showUserLocation: true
+  })
+  this._map.addControl(this.activeLocator)
+}
 
+beginNavigation() {
+  const myMap =this;
+  this.activeLocator.trigger()
+  this.activeLocator.fitBounds = this.boundsObject
+  this.test(TurnByTurn.route)
+  this.activeLocator.on("geolocate", function(event){
+    myMap.follow(event.coords)
+  })
+}
+
+test(route) {
+  route=TurnByTurn.route
+  const myMap=this;
+  route.forEach(function(coords) {
+    window.setTimeout(myMap.follow(coords), 3000)
+  })
+}
+
+follow(coords){
+  this._map.panTo([coords.longitude, coords.latitude])
+  this._map.setBearing(coords.heading)
+}
+
+applyDirections(destination){
+  this.directions.setOrigin(this.state.userLngLat);
+  this.directions.setDestination(destination);
+}
+
+toggleStartButton() {
+  this.state.showStartButton?
+  this.setState({showStartButton: false}):
+  this.setState({showStartButton: true});
 }
 
 
@@ -194,10 +261,23 @@ render(){
     position:"absolute",
     width: "100%",
   }
+  const footerStyle = {
+    position: 'absolute',
+    bottom: "0%",
+    fontSize: 12
+  }
+
   return(
-
+    <div>
       <div ref={el => this.myMap = el} style={mapStyle}/>
-
+        <footer style={footerStyle}>
+        Hamburger By Google Inc., <a href="https://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=36335118">Link</a>
+      {this.state.showStartButton?
+          <button onClick={this.test}>Start</button>
+          :null
+          }
+        </footer>
+    </div>
   )
   }
 }
@@ -209,16 +289,19 @@ export function openChangeOriginBox() {
     changeOriginBox = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       placeholder: "New origin?",
-      className: "mapboxgl-ctrl"
+      className: "mapboxgl-ctrl",
+      countries: "US"
     });
   this._map.addControl(changeOriginBox);
   const myMap = this;
   changeOriginBox.on("result", function(pos) {
     const loc = pos.result.geometry.coordinates
-    myMap._map.removeControl(changeOriginBox)
     myMap.addOriginLocationText(loc);
-    myMap.initAll(loc);
-    myMap.props.toggleOriginBox();
+    // myMap.props.toggleOriginBox();
+    myMap.destinationBox.setProximity(loc);
+    myMap.setUserLocation(loc)
+    myMap.props.toggleMenu()
+    // myMap._map.removeControl(changeOriginBox)
   })
   this.props.toggleOriginBox();
 } else {

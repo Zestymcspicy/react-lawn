@@ -28,10 +28,16 @@ class SaveDestinationBox extends Component {
       closeButton: {
         border:"none",
         backgroundColor:"inherit"
+      },
+      saveBox: {
+        // width: "50%"
+      },
+      placeName: {
+        maxWidth: "100%"
       }
     }
     return(
-        <div>
+        <div style={styles.saveBox}>
           <button
             style={styles.closeButton}
             onClick={this.props.toggleSaveBox}>

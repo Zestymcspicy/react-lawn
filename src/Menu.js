@@ -43,10 +43,11 @@ toggleSaveBox(){
         position: 'fixed',
         display: this.props.menuOpen?'block':'none',
         backgroundColor: '#139f25',
-        top: 80
+        top: 80,        
       },
       listItem: {
         padding: '10% 2%',
+        maxWidth: 170
       },
       button: {
         backgroundColor: 'transparent',

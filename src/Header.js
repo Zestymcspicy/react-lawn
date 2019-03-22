@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import hamburger from './hamburger.svg'
 import OriginLocationBox from './OriginLocationBox.js'
 import Menu from './Menu.js'
+import DirectionsBox from './DirectionsBox.js'
 
 
 
@@ -11,20 +12,11 @@ export default class Header extends Component{
   constructor(props){
     super(props)
       this.state = {
-        menuOpen: false,
       }
-  this.toggleMenu = this.toggleMenu.bind(this)
 }
 
-  saveDestination(){
-    console.log("isthiswhatyouwanted?")
-  }
 
-  toggleMenu(){
-    this.state.menuOpen?
-    this.setState({menuOpen: false}):
-    this.setState({menuOpen: true})
-  }
+
 render(){
   const styles = {
     header: {
@@ -52,9 +44,9 @@ render(){
     <div style={styles.header}>
       <Menu
         saveDestination={this.saveDestination}
-        menuOpen={this.state.menuOpen}/>
+        menuOpen={this.props.menuOpen}/>
     <button
-    onClick={this.toggleMenu}
+    onClick={this.props.toggleMenu}
     style={styles.burger}>
     <img src={hamburger} alt="hamburger"/>
     </button>
@@ -64,6 +56,7 @@ render(){
         originText={this.props.originText}/>
       :null
     }
+    <DirectionsBox/>
     </div>
     )
   }

@@ -25,11 +25,19 @@ class SavedListBox extends Component{
         width: "100%",
         border: "none",
         backgroundColor: "transparent"
+      },
+      closeButton: {
+        border:"none",
+        backgroundColor:"inherit"
       }
     }
     return(
     <div>
-    <button onClick={this.props.toggleSavedList}>X</button>
+    <button
+      style={styles.closeButton}
+      onClick={this.props.toggleSavedList}>
+      X
+    </button>
     {this.context.user.savedLocations==0?
     <p>You haven't saved any destionations yet</p>
   :
@@ -46,7 +54,7 @@ class SavedListBox extends Component{
         <button
         onClick={() => this.context.deleteDestination(x)}
         style={styles.button}>
-        Delete Destination
+        Delete
         </button>
       </div>
     </li>

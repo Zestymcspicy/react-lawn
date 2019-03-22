@@ -13,22 +13,32 @@ class App extends Component {
       destination: {
         coords: [],
         place_name: "No Place Name",
-        nickname: null
+        nickname: null,
+        menuOpen: false,
       },
-      nearEndpoint: [],
+      directions: {},
       user: {},
       originText: "",
       showOriginBox: true,
       saveDestination: this.saveDestination.bind(this),
       deleteDestination: this.deleteDestination.bind(this)
     }
-    this.setNearEndpoint = this.setNearEndpoint.bind(this);
+    this.setDirections = this.setDirections.bind(this);
     this.setDestination = this.setDestination.bind(this);
     this.setUser = this.setUser.bind(this);
     this.setOriginText = this.setOriginText.bind(this);
     this.toggleOriginBox = this.toggleOriginBox.bind(this);
     this.saveDestination = this.saveDestination.bind(this);
+    this.toggleMenu = this.toggleMenu.bind(this)
+
   }
+
+toggleMenu(){
+  this.state.menuOpen?
+  this.setState({menuOpen: false}):
+  this.setState({menuOpen: true})
+}
+
 
 toggleOriginBox(){
   this.state.showOriginBox?
@@ -40,13 +50,19 @@ setOriginText(originText){
   this.setState({originText})
 }
 
+setDirections(directions) {
+  this.setState({ directions })
+}
+
 setDestination(destination) {
   this.setState({destination});
 }
 
-setNearEndpoint(nearEndpoint) {
-  this.setState({nearEndpoint});
+setmidPoints(midPoints) {
+  this.setState({midPoints});
 }
+
+
 
 async setUser(user){
   if (user!==null) {
@@ -88,33 +104,30 @@ deleteDestination(destination) {
 }
 
   render() {
-    const footerStyle = {
-      position: 'absolute',
-      bottom: "0%",
-      fontSize: 12
-    }
 
 
     return (
       <div className="App">
         <DestinationProvider value={this.state}>
           <Header
-        showOriginBox={this.state.showOriginBox}
-        originText={this.state.originText}/>
+            menuOpen={this.state.menuOpen}
+            toggleMenu={this.toggleMenu}
+            showOriginBox={this.state.showOriginBox}
+            originText={this.state.originText}/>
         </DestinationProvider>
         <SignInUp
           isSignedIn={this.state.isSignedIn}
           setUser={this.setUser}/>
         <Map
+          setDirections={this.setDirections}
+          toggleMenu={this.toggleMenu}
           showOriginBox={this.state.showOriginBox}
           toggleOriginBox={this.toggleOriginBox}
           setOriginText={this.setOriginText}
           setDestination={this.setDestination}
-          setNearEndpoint={this.setNearEndpoint}
+          setmidPoints={this.setmidPoints}
           />
-          <footer style={footerStyle}>
-          Hamburger By Google Inc., <a href="https://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=36335118">Link</a>
-          </footer>
+
       </div>
     );
   }
