@@ -187,8 +187,13 @@ getDirections(destination) {
       let steps = response.body.routes[0].legs.map(x => x.steps)
       console.log(steps)
       let directions = steps[0].map(x => {
+        const modifier = (x.maneuver.modifier)?
+        x.maneuver.modifier.replace(' ', '-'):
+        undefined
         const direction = {
-          instruction: x.maneuver.instruction
+          instruction: x.maneuver.instruction,
+          distance: (x.distance/1609.344).toFixed(2),
+          modifier: modifier 
         }
         return direction
       })

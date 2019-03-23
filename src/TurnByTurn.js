@@ -38,7 +38,7 @@ const TurnByTurn = {
     let instructions = steps[0].map(x=> x.maneuver.instruction)
     // console.log(legs)
     // console.log(steps)
-    console.log(instructions)
+    // console.log(instructions)
   },
 
   addLine: function() {
