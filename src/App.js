@@ -16,7 +16,10 @@ class App extends Component {
         nickname: null,
         menuOpen: false,
       },
-      directions: {},
+      directions: {
+        directionSteps: [],
+        overall: {}
+      },
       user: {},
       originText: "",
       showOriginBox: true,
@@ -104,8 +107,12 @@ deleteDestination(destination) {
 }
 
   render() {
-
-
+    const styles = {
+      fade: {
+        height: 20,
+        backgroundImage: "linear-gradient(#139f25, transparent)"
+      }
+    }
     return (
       <div className="App">
         <DestinationProvider value={this.state}>
@@ -114,6 +121,7 @@ deleteDestination(destination) {
             toggleMenu={this.toggleMenu}
             showOriginBox={this.state.showOriginBox}
             originText={this.state.originText}/>
+          <div style={styles.fade}></div>
         </DestinationProvider>
         <SignInUp
           isSignedIn={this.state.isSignedIn}

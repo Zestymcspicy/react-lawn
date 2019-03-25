@@ -4,18 +4,19 @@
   display: none !important;
 }
 
-.mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right{
+.mapboxgl-ctrl-top-left{
     top: 35px;
+}
+
+.mapboxgl-ctrl-top-right{
+    top: 22px;
+}
+
+.mapboxgl-popup-content{
+  padding: 2px 20px 2px 4px;
 }
 
 button:hover{
   background-color: #d8f23f !important;
   cursor: pointer;
 }
-
-
-/* @media screen and (orientation: landscape) {
-  .mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right{
-    top: 10%;
-  }
-} */

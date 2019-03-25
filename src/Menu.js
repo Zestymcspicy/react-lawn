@@ -13,8 +13,8 @@ this.state ={
 }
 this.toggleSaveBox = this.toggleSaveBox.bind(this);
 this.toggleSavedList = this.toggleSavedList.bind(this);
-
 }
+
 originButtonClick()  {
     openChangeOriginBox()
 }
@@ -43,7 +43,7 @@ toggleSaveBox(){
         position: 'fixed',
         display: this.props.menuOpen?'block':'none',
         backgroundColor: '#139f25',
-        top: 80,        
+        top: 65,
       },
       listItem: {
         padding: '10% 2%',
@@ -55,7 +55,8 @@ toggleSaveBox(){
         fontFamily: `"-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen",
         "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
         "sans-serif"`
-      }
+      },
+
     }
     return(
       <div style={styles.menu}>

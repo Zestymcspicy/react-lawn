@@ -41,6 +41,14 @@ const TurnByTurn = {
     // console.log(instructions)
   },
 
+  follow: function(event) {
+    console.log(event)
+    this.map.easeTo({
+      center:[event.coords.longitude, event.coords.latitude],
+      bearing: event.coords.heading,
+    })
+  },
+
   addLine: function() {
     TurnByTurn.routeLayer = this.map.getLayer(this.presentLayerId);
     if(TurnByTurn.routeLayer!==undefined){

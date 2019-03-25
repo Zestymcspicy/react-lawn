@@ -21,10 +21,11 @@ render(){
   const styles = {
     header: {
       backgroundColor: '#139f25',
-      height: 80,
+      height: 65,
       textAlign: 'center',
       top: 0,
-      fontSize: "100%"
+      // fontSize: "100%",
+      // boxShadow: "0px 16px 2px 2px rgba(0, 0, 0, 0.1)"
     },
     title: {
       paddingTop: 10,
@@ -38,7 +39,8 @@ render(){
       left: 5,
       position: 'absolute',
       top: 10,
-    }
+    },
+
   }
   return(
     <div style={styles.header}>
@@ -46,7 +48,7 @@ render(){
         saveDestination={this.saveDestination}
         menuOpen={this.props.menuOpen}/>
     <button
-    onClick={this.props.toggleMenu}
+    onClick={()=>this.props.toggleMenu()}
     style={styles.burger}>
     <img src={hamburger} alt="hamburger"/>
     </button>
