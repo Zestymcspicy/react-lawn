@@ -20,11 +20,14 @@ class App extends Component {
         directionSteps: [],
         overall: {}
       },
+      directionsVisible: false,
       user: {},
       originText: "",
       showOriginBox: true,
       saveDestination: this.saveDestination.bind(this),
-      deleteDestination: this.deleteDestination.bind(this)
+      deleteDestination: this.deleteDestination.bind(this),
+      closeDirections: this.closeDirections.bind(this),
+      openDirections: this.openDirections.bind(this)
     }
     this.setDirections = this.setDirections.bind(this);
     this.setDestination = this.setDestination.bind(this);
@@ -32,8 +35,8 @@ class App extends Component {
     this.setOriginText = this.setOriginText.bind(this);
     this.toggleOriginBox = this.toggleOriginBox.bind(this);
     this.saveDestination = this.saveDestination.bind(this);
-    this.toggleMenu = this.toggleMenu.bind(this)
-
+    this.toggleMenu = this.toggleMenu.bind(this);
+    this.openDirections = this.openDirections.bind(this);
   }
 
 toggleMenu(){
@@ -61,11 +64,15 @@ setDestination(destination) {
   this.setState({destination});
 }
 
-setmidPoints(midPoints) {
-  this.setState({midPoints});
+openDirections(){
+  console.log("goodbye")
+  this.setState({directionsVisible: true})
 }
 
-
+closeDirections(){
+  console.log("hello")
+  this.setState({directionsVisible: false})
+}
 
 async setUser(user){
   if (user!==null) {
@@ -117,6 +124,7 @@ deleteDestination(destination) {
       <div className="App">
         <DestinationProvider value={this.state}>
           <Header
+            directionsVisible={this.state.directionsVisible}
             menuOpen={this.state.menuOpen}
             toggleMenu={this.toggleMenu}
             showOriginBox={this.state.showOriginBox}
@@ -127,13 +135,13 @@ deleteDestination(destination) {
           isSignedIn={this.state.isSignedIn}
           setUser={this.setUser}/>
         <Map
+          openDirections={this.openDirections}
           setDirections={this.setDirections}
           toggleMenu={this.toggleMenu}
           showOriginBox={this.state.showOriginBox}
           toggleOriginBox={this.toggleOriginBox}
           setOriginText={this.setOriginText}
           setDestination={this.setDestination}
-          setmidPoints={this.setmidPoints}
           />
 
       </div>

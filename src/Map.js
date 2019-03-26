@@ -7,7 +7,6 @@ const client = require('@mapbox/mapbox-sdk')
 const mbxDirections = require('@mapbox/mapbox-sdk/services/directions')
 const mbxGeocoder = require('@mapbox/mapbox-sdk/services/geocoding')
 
-let destinationBox;
 
 class Map extends Component {
   constructor(props){
@@ -159,6 +158,7 @@ getDirections(destination) {
       // this.activeLocator.trigger()
       this.showStartButton()
     }
+    this.props.openDirections()
     this.buildDirectionsBoxDirections(response)
     TurnByTurn.map = this._map
     TurnByTurn.directions = response.body.routes[0];
@@ -243,7 +243,7 @@ hideStartButton() {
 render(){
   const mapStyle = {
     zIndex: -1,
-    top: "10%",
+    top: "9%",
     left:"0",
     right:"0",
     bottom: "0",

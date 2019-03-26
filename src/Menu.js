@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {openChangeOriginBox} from './Map.js'
 import SaveDestinationBox from './SaveDestinationBox.js'
 import SavedListBox from './SavedListBox.js'
-
+import { DestinationContext } from './Context.js'
 
 class Menu extends Component{
   constructor(props){
@@ -90,10 +90,25 @@ toggleSaveBox(){
               toggleSavedList={this.toggleSavedList}/>
             :null}
           </li>
+          {this.context.directions.directionSteps.length>0?
+          <li>
+            {this.context.directionsVisible?
+              <button style={styles.button}
+                onClick={()=>this.context.closeDirections()}>
+                Hide Directions
+              </button>
+              :
+              <button style={styles.button}
+                onClick={()=>this.context.openDirections()}>
+                Show Directions
+              </button>
+            }
+          </li>:
+          null}
         </ol>
       </div>
     )}
   }
 
-
+Menu.contextType = DestinationContext
 export default Menu;

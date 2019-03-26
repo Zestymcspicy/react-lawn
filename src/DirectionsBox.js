@@ -17,20 +17,39 @@ function DirectionsBox() {
       position: "absolute",
       right: "1%",
       top: "21%",
-      paddingLeft: 0
+      paddingLeft: 0,
     },
     listItem: {
       color: "#d4d2d1",
-    }
+    },
+    button: {
+      width: "10%",
+      color: "#d4d2d1",
+      backgroundColor: 'transparent',
+      border: 'none',
+      fontFamily: `"-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen",
+      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+      "sans-serif"`
+    },
+    topItem: {
+      color: "#d4d2d1",
+      display: "flex"
+    },
+    topSpan: {
+      width: "90%",
 
+    }
   }
-  if(directionsContext.directions.directionSteps.length>0) {
+  if(directionsContext.directionsVisible===true) {
   return(
     <div>
       <ol style={styles.list}>
-        <span style={styles.listItem}>
+        <li style={styles.topItem}>
+        <button onClick={()=>directionsContext.closeDirections()} style={styles.button}>Hide</button>
+        <span style={styles.topSpan}>
           {overallDistance}mi.  {overallDuration} min.
         </span>
+        </li>
         {directionsContext.directions.directionSteps.map((x, index) => {
         return(
         <li
