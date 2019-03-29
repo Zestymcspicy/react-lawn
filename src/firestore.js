@@ -2,23 +2,25 @@ import { firestore } from "./SignInUp.js"
 
 
 function checkUser(incomingUser) {
-  return firestore.collection("users").get().then((response) => {
+  return firestore.collection("users").doc(incomingUser.uid).get().then((response) => {
+  // return firestore.collection("users").get().then((response) => {
     if(response===null||undefined) {
       addUser(incomingUser)
-    }
-    const dataArray = [];
-      response.forEach(doc => {
-        const data = doc.data()
-        dataArray.push(data)
-      })
-      if (dataArray.length===0){
-        addUser(incomingUser);
-      }
-      const userArr = dataArray.filter(x=> x.uid===incomingUser.uid);
-      if(userArr.length===0){
-        addUser(incomingUser)
+    // }
+    // const dataArray = [];
+    //   response.forEach(doc => {
+    //     const data = doc.data()
+    //     dataArray.push(data)
+    //   })
+      // console.log(dataArray)
+      // if (dataArray.length===0){
+      //   addUser(incomingUser);
+      // }
+      // const userArr = dataArray.filter(x=> x.uid===incomingUser.uid);
+      // if(userArr.length===0){
+      //   addUser(incomingUser)
       } else {
-        return userArr[0];
+        return response.data();
       }
     })
   }

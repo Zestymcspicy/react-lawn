@@ -21,7 +21,6 @@ class Map extends Component {
     this.baseClient = client({ accessToken: this.mbxToken});
     this.directionsService = mbxDirections(this.baseClient);
     this.geolocationService = mbxGeocoder(this.baseClient);
-    this.beginNavigation = this.beginNavigation.bind(this);
     openChangeOriginBox = openChangeOriginBox.bind(this);
     setSavedDirections = setSavedDirections.bind(this);
   }
@@ -41,6 +40,8 @@ componentDidMount (){
   myApp.noGeoStart()
 }
 }
+
+
 errorFunction(error, myApp) {
   console.log(error);
   myApp.noGeoStart();
@@ -154,10 +155,6 @@ getDirections(destination) {
   })
   .send()
   .then(response => {
-    if(!this.state.customOrigin){
-      // this.activeLocator.trigger()
-      this.showStartButton()
-    }
     this.props.openDirections()
     this.buildDirectionsBoxDirections(response)
     TurnByTurn.map = this._map
@@ -167,7 +164,15 @@ getDirections(destination) {
     let bounds = coordinates.reduce(function(bounds, coord) {
       return bounds.extend(coord);
     }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]))
-    this._map.fitBounds(bounds, {padding: 20})
+    this._map.fitBounds(bounds,
+      {padding: {
+        top: 350,
+        bottom: 30,
+        right: 200,
+        left: 50
+        }
+      }
+    )
   })
 }
 
@@ -179,7 +184,6 @@ buildDirectionsBoxDirections(data){
   directions.overall.duration = Math.round(data.body.routes[0].duration/60);
   directions.overall.distance = (data.body.routes[0].distance/1609.344).toFixed(2);
   let steps = data.body.routes[0].legs.map(x => x.steps)
-  console.log(steps)
   directions.directionSteps = steps[0].map(x => {
     let modifier;
     if(x.maneuver.type!=="arrive"){
@@ -220,23 +224,6 @@ addGeolocator() {
     showUserLocation: true
   })
   this._map.addControl(this.activeLocator);
-}
-
-beginNavigation() {
-  this.activeLocator.on("geolocate", function(event){
-    TurnByTurn.follow(event)
-    event.target._updateCamera(event)
-  })
-  this.activeLocator.trigger()
-}
-
-
-showStartButton() {
-  this.setState({showStartButton: true});
-}
-
-hideStartButton() {
-  this.setState({showStartButton: false})
 }
 
 

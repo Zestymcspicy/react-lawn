@@ -18,6 +18,9 @@ function DirectionsBox() {
       right: "1%",
       top: "21%",
       paddingLeft: 0,
+      maxWidth: 400,
+      maxHeight: 300,
+      overflowY: "scroll"
     },
     listItem: {
       color: "#d4d2d1",
@@ -37,7 +40,6 @@ function DirectionsBox() {
     },
     topSpan: {
       width: "90%",
-
     }
   }
   if(directionsContext.directionsVisible===true) {
@@ -57,7 +59,7 @@ function DirectionsBox() {
           style={styles.listItem}>
         <span className={baseClass+x.modifier}></span>
         <span>{x.instruction}</span>
-        {x.distance!=0?
+        {x.distance!==0?
         <span> {x.distance}</span>
         :null
       }

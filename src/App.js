@@ -20,6 +20,7 @@ class App extends Component {
         directionSteps: [],
         overall: {}
       },
+      wantsToSignIn: true,
       directionsVisible: false,
       user: {},
       originText: "",
@@ -27,8 +28,9 @@ class App extends Component {
       saveDestination: this.saveDestination.bind(this),
       deleteDestination: this.deleteDestination.bind(this),
       closeDirections: this.closeDirections.bind(this),
-      openDirections: this.openDirections.bind(this)
+      openDirections: this.openDirections.bind(this),
     }
+    this.openSignIn = this.openSignIn.bind(this)
     this.setDirections = this.setDirections.bind(this);
     this.setDestination = this.setDestination.bind(this);
     this.setUser = this.setUser.bind(this);
@@ -38,6 +40,7 @@ class App extends Component {
     this.toggleMenu = this.toggleMenu.bind(this);
     this.openDirections = this.openDirections.bind(this);
   }
+
 
 toggleMenu(){
   this.state.menuOpen?
@@ -65,26 +68,29 @@ setDestination(destination) {
 }
 
 openDirections(){
-  console.log("goodbye")
   this.setState({directionsVisible: true})
 }
 
 closeDirections(){
-  console.log("hello")
   this.setState({directionsVisible: false})
 }
+
+openSignIn() {
+  this.setState({wantsToSignIn: true})
+}
+
 
 async setUser(user){
   if (user!==null) {
      user = await checkUser(user)
       this.setState({
         user: user,
-        isSignedIn: !!user
+        wantsToSignIn: false
     })
   } else {
     this.setState({
       user: user,
-      isSignedIn: !!user
+      wantsToSignIn: false
     })
   }
 }
@@ -132,8 +138,10 @@ deleteDestination(destination) {
           <div style={styles.fade}></div>
         </DestinationProvider>
         <SignInUp
-          isSignedIn={this.state.isSignedIn}
-          setUser={this.setUser}/>
+          user={this.state.user}
+          wantsToSignIn={this.state.wantsToSignIn}
+          setUser={this.setUser}
+          openSignIn={this.openSignIn}/>
         <Map
           openDirections={this.openDirections}
           setDirections={this.setDirections}

@@ -15,18 +15,21 @@ export const firestore = firebase.firestore()
 
 class SignInUp extends Component {
 
-signOut = () => firebase.auth().signOut();
 
 
-uiConfig = {
+  signOut = () => firebase.auth().signOut();
+
+
+  uiConfig = {
     signInFlow: 'popup',
+    signInSuccessUrl: '/signedIn',
     signInOptions: [
-      firebase.auth.EmailAuthProvider.PROVIDER_ID
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
     ],
     callbacks: {
       signInSuccessWithAuthResult: () => false
     }
-};
+  };
   componentDidMount(){
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
     (user) => {
@@ -39,12 +42,18 @@ uiConfig = {
     this.unregisterAuthObserver();
   }
 
+  verifyUser = function() {
+    console.log(firebase.auth().currentUser)
+  }
+
   render() {
     const styles = {
-      signOut: {
+      signOutIn: {
+        textAlign: "center",
         right: 10,
         position: 'fixed',
-        top: "4%"},
+        top: "3%"
+      },
       button: {
         width: "100%",
         border: "none",
@@ -52,20 +61,35 @@ uiConfig = {
       }
     }
 
-    if (!this.props.isSignedIn) {
+    if (this.props.wantsToSignIn===true) {
       return (
         <div>
-          <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()}/>
+          <StyledFirebaseAuth
+            uiCallback={ui => ui.disableAutoSignIn()}
+            uiConfig={this.uiConfig}
+            firebaseAuth={firebase.auth()}>
+          </StyledFirebaseAuth>
         </div>
       );
     }
     return (
-      <div style={styles.signOut}>
+      this.props.user!==null?
+      <div style={styles.signOutIn}>
+        <span>Hello {this.props.user.displayName}</span>
         <button
           onClick={() => firebase.auth().signOut()}
           style={styles.button}>
           Sign-out</button>
       </div>
+      :
+      <div style={styles.signOutIn}>
+        <button
+          onClick={this.props.openSignIn}
+          style={styles.button}>
+          SignIn
+        </button>
+      </div>
+
       );
   }
 }

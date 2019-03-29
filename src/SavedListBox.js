@@ -38,8 +38,8 @@ class SavedListBox extends Component{
       onClick={this.props.toggleSavedList}>
       X
     </button>
-    {this.context.user.savedLocations==0?
-    <p>You haven't saved any destionations yet</p>
+    {(this.context.user===null||this.context.user.savedLocations==0)?
+    <p>You haven't saved any destinations yet or aren't signed in</p>
   :
     <ol style={styles.list}>
     {this.context.user.savedLocations.map( x =>
@@ -61,6 +61,7 @@ class SavedListBox extends Component{
   )}
     </ol>
     }
+
     </div>
   )
   }

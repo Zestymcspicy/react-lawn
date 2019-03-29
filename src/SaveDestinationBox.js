@@ -48,6 +48,7 @@ class SaveDestinationBox extends Component {
           :
           <div>
             <p>{this.context.destination.place_name}</p>
+            {this.context.user!==null?
             <form onSubmit={this.handleSubmit}>
               <input
                 onChange={this.handleChange}
@@ -59,6 +60,8 @@ class SaveDestinationBox extends Component {
                 type="submit"
                 value="Save"/>
             </form>
+            :
+            <span>You must be signed in to do that</span>}
           </div>}
       </div>
     )
