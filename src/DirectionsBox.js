@@ -26,7 +26,7 @@ function DirectionsBox() {
       color: "#d4d2d1",
     },
     button: {
-      width: "10%",
+      width: "15%",
       color: "#d4d2d1",
       backgroundColor: 'transparent',
       border: 'none',
@@ -39,7 +39,7 @@ function DirectionsBox() {
       display: "flex"
     },
     topSpan: {
-      width: "90%",
+      width: "85%",
     }
   }
   if(directionsContext.directionsVisible===true) {

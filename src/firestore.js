@@ -2,25 +2,24 @@ import { firestore } from "./SignInUp.js"
 
 
 function checkUser(incomingUser) {
-  return firestore.collection("users").doc(incomingUser.uid).get().then((response) => {
-  // return firestore.collection("users").get().then((response) => {
+  // return firestore.collection("users").doc(incomingUser.uid).get().then((response) => {
+  return firestore.collection("users").get().then((response) => {
     if(response===null||undefined) {
-      addUser(incomingUser)
-    // }
-    // const dataArray = [];
-    //   response.forEach(doc => {
-    //     const data = doc.data()
-    //     dataArray.push(data)
-    //   })
-      // console.log(dataArray)
-      // if (dataArray.length===0){
-      //   addUser(incomingUser);
-      // }
-      // const userArr = dataArray.filter(x=> x.uid===incomingUser.uid);
-      // if(userArr.length===0){
-      //   addUser(incomingUser)
+      return addUser(incomingUser)
+    }
+    const dataArray = [];
+      response.forEach(doc => {
+        const data = doc.data()
+        dataArray.push(data)
+      })
+      if (dataArray.length===0){
+        return addUser(incomingUser);
+      }
+      const userArr = dataArray.filter(x=> x.uid===incomingUser.uid);
+      if(userArr.length===0){
+        return addUser(incomingUser)
       } else {
-        return response.data();
+        return userArr[0];
       }
     })
   }
@@ -41,12 +40,13 @@ function addUser(user) {
     displayName: user.displayName,
     savedLocations: [],
   }
-  firestore.collection("users").doc(user.uid).set(newUser)
+  return firestore.collection("users").doc(user.uid).set(newUser)
   .then(function(docRef) {
     return newUser
   })
   .catch(function(error) {
     console.error("Error adding document: ", error);
+    return newUser
   });
 }
 

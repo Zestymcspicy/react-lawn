@@ -47,6 +47,10 @@ class SignInUp extends Component {
   }
 
   render() {
+    // const name = this.props.user!==0?
+    // this.props.user.displayName:
+    // null;
+
     const styles = {
       signOutIn: {
         textAlign: "center",
@@ -73,7 +77,7 @@ class SignInUp extends Component {
       );
     }
     return (
-      this.props.user!==null?
+      this.props.user!==null||undefined?
       <div style={styles.signOutIn}>
         <span>Hello {this.props.user.displayName}</span>
         <button
