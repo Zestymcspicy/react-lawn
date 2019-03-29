@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SignInUp from './SignInUp';
 import Header from './Header';
 import './App.css';
-import Map from './Map.js';
+import Map from  './Map.js';
 import { checkUser, dbChangeDestinations } from './firestore.js'
 import { DestinationProvider } from './Context.js'
 
@@ -40,6 +40,7 @@ class App extends Component {
     this.toggleMenu = this.toggleMenu.bind(this);
     this.openDirections = this.openDirections.bind(this);
   }
+
 
 
 toggleMenu(){

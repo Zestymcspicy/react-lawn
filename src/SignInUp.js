@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import firebase from 'firebase';
+import firebaseui from 'firebaseui';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 const config = {
     apiKey: "AIzaSyBLylb4pCBdTnEIU1yWWC2Pnr9pLHHn1v0",
@@ -14,18 +15,21 @@ firebase.initializeApp(config);
 export const firestore = firebase.firestore()
 
 class SignInUp extends Component {
+    constructor(props){
+      super(props)
+    }
 
 
-
-  signOut = () => firebase.auth().signOut();
-
+  signOut() {
+    firebase.auth().signOut();
+  }
 
   uiConfig = {
     signInFlow: 'popup',
-    signInSuccessUrl: '/signedIn',
     signInOptions: [
       firebase.auth.EmailAuthProvider.PROVIDER_ID,
     ],
+    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
     callbacks: {
       signInSuccessWithAuthResult: () => false
     }
@@ -40,10 +44,6 @@ class SignInUp extends Component {
 
   componentWillUnmount() {
     this.unregisterAuthObserver();
-  }
-
-  verifyUser = function() {
-    console.log(firebase.auth().currentUser)
   }
 
   render() {
@@ -84,7 +84,7 @@ class SignInUp extends Component {
       :
       <div style={styles.signOutIn}>
         <button
-          onClick={this.props.openSignIn}
+          onClick={()=>this.props.openSignIn()}
           style={styles.button}>
           SignIn
         </button>
@@ -94,5 +94,7 @@ class SignInUp extends Component {
   }
 }
 
-
-export default SignInUp
+export const verifyUser = () => {
+  console.log(firebase.auth().currentUser)
+}
+export default SignInUp;

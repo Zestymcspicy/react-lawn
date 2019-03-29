@@ -56,6 +56,7 @@ class SaveDestinationBox extends Component {
                 value={this.state.nickname}
                 type="text"/>
               <input
+                id="save-button"
                 style={styles.closeButton}
                 type="submit"
                 value="Save"/>

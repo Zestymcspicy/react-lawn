@@ -169,7 +169,7 @@ getDirections(destination) {
         top: 350,
         bottom: 30,
         right: 200,
-        left: 50
+        left: 120
         }
       }
     )
