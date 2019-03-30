@@ -230,7 +230,7 @@ addGeolocator() {
 render(){
   const mapStyle = {
     zIndex: -1,
-    top: "9%",
+    top: "8%",
     left:"0",
     right:"0",
     bottom: "0",

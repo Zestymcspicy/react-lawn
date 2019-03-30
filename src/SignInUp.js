@@ -15,9 +15,7 @@ firebase.initializeApp(config);
 export const firestore = firebase.firestore()
 
 class SignInUp extends Component {
-    constructor(props){
-      super(props)
-    }
+    
 
 
   signOut() {
@@ -47,9 +45,7 @@ class SignInUp extends Component {
   }
 
   render() {
-    // const name = this.props.user!==0?
-    // this.props.user.displayName:
-    // null;
+
 
     const styles = {
       signOutIn: {
@@ -98,7 +94,5 @@ class SignInUp extends Component {
   }
 }
 
-export const verifyUser = () => {
-  console.log(firebase.auth().currentUser)
-}
+
 export default SignInUp;

@@ -65,7 +65,7 @@ setDirections(directions) {
 }
 
 setDestination(destination) {
-  this.setState({destination});
+  this.setState({ destination });
 }
 
 openDirections(){

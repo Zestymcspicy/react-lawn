@@ -29,15 +29,15 @@ class SaveDestinationBox extends Component {
         border:"none",
         backgroundColor:"inherit"
       },
-      saveBox: {
-        // width: "50%"
+      nicknameInput: {
+        width: "85%"
       },
       placeName: {
         maxWidth: "100%"
       }
     }
     return(
-        <div style={styles.saveBox}>
+        <div>
           <button
             style={styles.closeButton}
             onClick={this.props.toggleSaveBox}>
@@ -51,6 +51,7 @@ class SaveDestinationBox extends Component {
             {this.context.user!==null?
             <form onSubmit={this.handleSubmit}>
               <input
+                style={styles.nicknameInput}
                 onChange={this.handleChange}
                 placeholder="Location Nickname"
                 value={this.state.nickname}
