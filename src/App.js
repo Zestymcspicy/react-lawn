@@ -30,53 +30,47 @@ class App extends Component {
       closeDirections: this.closeDirections.bind(this),
       openDirections: this.openDirections.bind(this),
     }
-    this.openSignIn = this.openSignIn.bind(this)
-    this.setDirections = this.setDirections.bind(this);
-    this.setDestination = this.setDestination.bind(this);
+
     this.setUser = this.setUser.bind(this);
-    this.setOriginText = this.setOriginText.bind(this);
-    this.toggleOriginBox = this.toggleOriginBox.bind(this);
-    this.saveDestination = this.saveDestination.bind(this);
-    this.toggleMenu = this.toggleMenu.bind(this);
-    this.openDirections = this.openDirections.bind(this);
+    
   }
 
 
 
-toggleMenu(){
+toggleMenu = () => {
   this.state.menuOpen?
   this.setState({menuOpen: false}):
   this.setState({menuOpen: true})
 }
 
 
-toggleOriginBox(){
+toggleOriginBox = () => {
   this.state.showOriginBox?
   this.setState({showOriginBox: false}):
   this.setState({showOriginBox: true})
 }
 
-setOriginText(originText){
+setOriginText = originText => {
   this.setState({originText})
 }
 
-setDirections(directions) {
+setDirections = directions => {
   this.setState({ directions })
 }
 
-setDestination(destination) {
-  this.setState({ destination });
+setDestination = destination => {
+  this.setState({destination});
 }
 
-openDirections(){
+openDirections = () => {
   this.setState({directionsVisible: true})
 }
 
-closeDirections(){
+closeDirections = () => {
   this.setState({directionsVisible: false})
 }
 
-openSignIn() {
+openSignIn = () => {
   this.setState({wantsToSignIn: true})
 }
 
@@ -96,7 +90,7 @@ async setUser(user){
   }
 }
 
-saveDestination(nickname){
+saveDestination = nickname => {
   let savedLocations = this.state.user.savedLocations;
   if(savedLocations.every(x => x.coords!==this.state.destination.coords)){
     let location = this.state.destination;
@@ -111,7 +105,7 @@ saveDestination(nickname){
   }
 }
 
-deleteDestination(destination) {
+deleteDestination = destination => {
   let savedLocations = this.state.user.savedLocations;
   let user = this.state.user;
   savedLocations = savedLocations.filter(x => destination.coords!==x.coords);
