@@ -4,10 +4,6 @@ import OriginLocationBox from './OriginLocationBox.js'
 import Menu from './Menu.js'
 import DirectionsBox from './DirectionsBox.js'
 
-
-
-
-
 export default class Header extends Component{
   constructor(props){
     super(props)
@@ -15,7 +11,25 @@ export default class Header extends Component{
       }
 }
 
+componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
 
+componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+setWrapperRef = node =>{
+  this.wrapperRef = node;
+}
+
+handleClickOutside = event => {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      if(this.props.menuOpen){
+        this.props.toggleMenu();
+      }
+    }
+  }
 
 render(){
   const styles = {
@@ -44,14 +58,16 @@ render(){
   }
   return(
     <div style={styles.header}>
-      <Menu
-        saveDestination={this.saveDestination}
-        menuOpen={this.props.menuOpen}/>
-    <button
-    onClick={()=>this.props.toggleMenu()}
-    style={styles.burger}>
-    <img src={hamburger} alt="hamburger"/>
-    </button>
+      <div ref={this.setWrapperRef}>
+        <Menu
+          saveDestination={this.saveDestination}
+          menuOpen={this.props.menuOpen}/>
+      <button
+        onClick={()=>this.props.toggleMenu()}
+        style={styles.burger}>
+        <img src={hamburger} alt="hamburger"/>
+      </button>
+    </div>
       <h2 style={styles.title}>Where you mowing?</h2>
       {this.props.showOriginBox?
       <OriginLocationBox
