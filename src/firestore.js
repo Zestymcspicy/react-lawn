@@ -3,12 +3,10 @@ import { firestore } from "./SignInUp.js"
 
 function checkUser(incomingUser) {
   return firestore.collection("users").doc(incomingUser.uid).get().then((response) => {
-  console.log(incomingUser)
   const data = response.data()
   if(data===undefined) {
     return addUser(incomingUser)
   } else {
-    console.log(data)
     return data
   }
 });
