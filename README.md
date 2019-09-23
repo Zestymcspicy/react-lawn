@@ -1,3 +1,7 @@
+An application that provides directions for lawn mowing services to pull their vehicles up on the correct side of the street allowing  for quick unload of equipment.
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
