@@ -20,3 +20,25 @@
   background-color: #d8f23f !important;
   cursor: pointer;
 }
+
+@media screen and (max-width: 650px) {
+
+  #signOutIn {
+    width: 27%;
+    top: 1% !important;
+  }
+}
+
+
+@media screen and (max-width: 350px) {
+
+  .mapboxgl-ctrl-top-left{
+    left: -2%;
+    width: 60%;
+  }
+
+  #originLocationBox{
+    right: 3px;
+  }
+
+}

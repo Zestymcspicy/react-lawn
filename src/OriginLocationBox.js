@@ -14,7 +14,7 @@ export default function OriginLocationBox(props) {
     }
   }
     return(
-      <div style={styles.box}>
+      <div id="originLocationBox" style={styles.box}>
       <span>Your Origin: {props.originText}</span>
       </div>
     )

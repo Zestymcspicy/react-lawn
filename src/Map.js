@@ -242,11 +242,22 @@ render(){
     bottom: "0%",
     fontSize: 12
   }
+  const fbStyle = {
+    margin: "0 0 30px 10px"
+  }
 
   return(
     <div>
       <div ref={el => this.myMap = el} style={mapStyle}/>
         <footer style={footerStyle}>
+          <div
+            className="fb-like"
+            style={fbStyle}
+            data-share="true"
+            data-width="450"
+            data-show-faces="true">
+          </div>
+
         Hamburger By Google Inc., <a href="https://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=36335118">Link</a>
         </footer>
     </div>

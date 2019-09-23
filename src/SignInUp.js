@@ -15,7 +15,7 @@ firebase.initializeApp(config);
 export const firestore = firebase.firestore()
 
 class SignInUp extends Component {
-    
+
 
 
   signOut() {
@@ -26,6 +26,7 @@ class SignInUp extends Component {
     signInFlow: 'popup',
     signInOptions: [
       firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
     ],
     credentialHelper: firebaseui.auth.CredentialHelper.NONE,
     callbacks: {
@@ -52,12 +53,23 @@ class SignInUp extends Component {
         textAlign: "center",
         right: 10,
         position: 'fixed',
-        top: "3%"
+        top: "2%",
       },
-      button: {
+      buttonSignIn: {
         width: "100%",
         border: "none",
-        backgroundColor: "transparent"
+        backgroundColor: "transparent",
+        height: "40px",
+        fontSize: "20px",
+      },
+      buttonSignOut: {
+        width: "30%",
+        border: "none",
+        backgroundColor: "transparent",
+        height: "40px",
+      },
+      nameSpan: {
+        width: "100%",
       }
     }
 
@@ -74,18 +86,18 @@ class SignInUp extends Component {
     }
     return (
       this.props.user!==null||undefined?
-      <div style={styles.signOutIn}>
-        <span>Hello {this.props.user.displayName}</span>
+      <div id="signOutIn" style={styles.signOutIn}>
+        <span style={styles.nameSpan}>Hello {this.props.user.displayName}</span>
         <button
           onClick={() => firebase.auth().signOut()}
-          style={styles.button}>
+          style={styles.buttonSignOut}>
           Sign-out</button>
       </div>
       :
-      <div style={styles.signOutIn}>
+      <div id="signOutIn" style={styles.signOutIn}>
         <button
           onClick={()=>this.props.openSignIn()}
-          style={styles.button}>
+          style={styles.buttonSignIn}>
           SignIn
         </button>
       </div>

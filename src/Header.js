@@ -38,8 +38,6 @@ render(){
       height: 65,
       textAlign: 'center',
       top: 0,
-      // fontSize: "100%",
-      // boxShadow: "0px 16px 2px 2px rgba(0, 0, 0, 0.1)"
     },
     title: {
       paddingTop: 10,
