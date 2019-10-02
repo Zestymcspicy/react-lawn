@@ -58,10 +58,15 @@ const TurnByTurn = {
         coords = this.geometryArray.coordinates[0];
       };
       console.log(coords);
-      this.map.jumpTo({'center': coords,'zoom': 18});
-    // this.map.center = this.directions.geometry.coordinates[0];
-    // this.currentStep = this.directions.
-      this.map.bearing = bearing;
+      setTimeout(()=>{
+        // if(bearing!=null){
+          this.map.setCenter(coords)
+          this.map.setZoom(18);
+          this.map.setBearing(bearing);
+        // } else {
+          // this.map.setZoom(16);
+        // }
+      },500);
       console.log(this.directions)
     });
   }
