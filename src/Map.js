@@ -14,7 +14,11 @@ class Map extends Component {
     this.state = {
       showStartButton: false,
       userLngLat: [],
-      customOrigin: false
+      userBearing: 0,
+      userSpeed: 0,
+      customOrigin: false,
+      destinationSet: false,
+      navigationOn: false,
     }
     this.geoLocateOptions={enableHighAccuracy: true};
     this.mbxToken = 'pk.eyJ1IjoiemVzdHltY3NwaWN5IiwiYSI6ImNqc281djVneTA5MzAzeXJ2ZWVoMjhmdzMifQ.uT5Hz9PEBvuLwVrZkrkp8A'
@@ -32,29 +36,30 @@ componentDidMount (){
   if(navigator.geolocation){
   navigator.geolocation.getCurrentPosition(function (pos) {
     let loc = [pos.coords.longitude, pos.coords.latitude];
-    myApp.initAll(loc);
+    console.log(pos);
+    let bearing = pos.coords.heading;
+    myApp.initAll(loc, bearing);
     myApp.addOriginLocationText(loc);
-
-  }, this.errorFunction, this.geoLocateOptions)
-}else{
-  myApp.noGeoStart()
-}
+    }, this.errorFunction, this.geoLocateOptions)
+  }else{
+    myApp.noGeoStart()
+  }
 }
 
 
 errorFunction(error, myApp) {
   console.log(error);
   myApp.noGeoStart();
-}
+};
 
 noGeoStart(){
   let loc = [-95.2, 38.9];
-  this.initAll(loc);
-}
+  this.initAll(loc, 0);
+};
 
-async initAll(loc) {
+async initAll(loc, bearing) {
   await this.addMap();
-  this.setState({userLngLat: loc})
+  this.setState({userLngLat: loc, userBearing: bearing});
   this.setMapCenter(loc);
   this.setUserLocation(loc);
   this.addDestinationBox(loc);
@@ -71,6 +76,7 @@ addMap() {
       boxZoom: true,
       pitch: 60
     });
+    TurnByTurn.map = this._map;
     myApp._map.on('click', function(event) {
       event.preventDefault()
     })
@@ -107,6 +113,9 @@ addDestinationBox(loc){
   this._map.addControl(this.destinationBox, 'top-left');
   const myApp = this;
   this.destinationBox.on("result", function(ev) {
+    if(myApp.state.navigationOn){
+      myApp.startNav();
+    }
     let userDestination = {
       place_name: ev.result.place_name,
       coords: ev.result.geometry.coordinates
@@ -126,16 +135,15 @@ setUserLocation(location) {
     this.originPopUp = new mapboxgl.Popup().addTo(this._map)
     this.originPopUp.setText("Origin")
     this.userLocationMarker.setPopup(this.originPopUp)
-
 }
 
 getDirections(destination) {
   this.destinationMarker.remove();
   this.destinationMarker.setLngLat(destination.coords);
   this.destinationMarker.addTo(this._map);
-  this.destinationPopUp = new mapboxgl.Popup().addTo(this._map)
-  this.destinationPopUp.setText("Destination")
-  this.destinationMarker.setPopup(this.destinationPopUp)
+  this.destinationPopUp = new mapboxgl.Popup().addTo(this._map);
+  this.destinationPopUp.setText("Destination");
+  this.destinationMarker.setPopup(this.destinationPopUp);
   this.props.setDestination(destination);
   this.directionsService.getDirections({
     profile: 'driving',
@@ -155,11 +163,11 @@ getDirections(destination) {
   })
   .send()
   .then(response => {
-    this.props.openDirections()
-    this.buildDirectionsBoxDirections(response)
-    TurnByTurn.map = this._map
+    this.props.openDirections();
+    this.buildDirectionsBoxDirections(response);
+    this.setState({destinationSet: true});
     TurnByTurn.directions = response.body.routes[0];
-    TurnByTurn.addLine();
+    TurnByTurn.addLine(response.body.routes[0]);
     let coordinates = response.body.routes[0].geometry.coordinates
     let bounds = coordinates.reduce(function(bounds, coord) {
       return bounds.extend(coord);
@@ -221,11 +229,33 @@ addGeolocator() {
       enableHighAccuracy: true
     },
     trackUserLocation: true,
-    showUserLocation: true
+    showUserLocation: true,
+    // fitBoundsOptions: {minZoom: 18}
   })
+  window.geolocator = this.activeLocator;
   this._map.addControl(this.activeLocator);
 }
 
+startNav() {
+  let bearing = this.state.userBearing;
+  if(this.props.navigationOn){
+    this.props.toggleNavigationOn();
+    this.setUserLocation(this.state.userLngLat);
+    this.triggerActiveLocator();
+    this.userLocationMarker.addTo(this._map);
+  } else {
+    this.props.toggleNavigationOn();
+    this.userLocationMarker.remove();
+    TurnByTurn.activeLocator = this.activeLocator;
+    this.triggerActiveLocator().then(function() {
+      TurnByTurn.startNav(bearing);
+    });
+  }
+}
+
+async triggerActiveLocator() {
+  this.activeLocator.trigger();
+}
 
 render(){
   const mapStyle = {
@@ -245,6 +275,13 @@ render(){
   const fbStyle = {
     margin: "0 0 30px 10px"
   }
+  const startNavStyle = {
+    border: "none",
+    height: "36px",
+    backgroundColor: "#0f94f2",
+    borderRadius: "4%",
+    margin: "0 0 0 5px"
+  }
 
   return(
     <div>
@@ -257,8 +294,20 @@ render(){
             data-width="450"
             data-show-faces="true">
           </div>
-
         Hamburger By Google Inc., <a href="https://creativecommons.org/licenses/by/4.0" title="Creative Commons Attribution 4.0">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=36335118">Link</a>
+      {this.state.destinationSet?
+          <button
+            style={startNavStyle}
+            onClick={()=>this.startNav()}>
+            {this.props.navigationOn?
+              "Stop Navigation"
+            :
+              "Start Navigation"
+            }
+          </button>
+          :
+          ""
+        }
         </footer>
     </div>
   )

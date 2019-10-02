@@ -1,3 +1,4 @@
+// import React, {useState} from 'react';
 // import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 
 const TurnByTurn = {
@@ -6,12 +7,15 @@ const TurnByTurn = {
   routeLayer: {},
   presentLayerId: "",
   layersArray: [],
+  currentStep: {},
+  upcomingStep: {},
+  activeLocator: {},
+  geometryArray: [],
 
 
-
-
-
-  addLine: function() {
+  addLine: function(directions) {
+    this.directions = directions;
+    this.geometryArray = directions.geometry;
     TurnByTurn.routeLayer = this.map.getLayer(this.presentLayerId);
     if(TurnByTurn.routeLayer!==undefined){
       this.map.removeLayer(this.presentLayerId);
@@ -25,7 +29,7 @@ const TurnByTurn = {
         "data": {
           "type": "Feature",
           "properties": {},
-          "geometry": this.directions.geometry
+          "geometry": this.geometryArray
         }
       },
       "layout": {
@@ -38,6 +42,29 @@ const TurnByTurn = {
       }
     })
   },
+
+  startNav: function(bearing) {
+    window.mapbox = this.map;
+    let directions=this.directions;
+    (async function(){
+      window.mapbox.fitBounds([directions.geometry.coordinates[0], directions.geometry.coordinates[1]])
+    })().then(() => {
+      // this.map.zoomTo(18);
+      console.log(this.activeLocator);
+      let coords;
+      if(this.activeLocator._lastKnownPosition){
+        coords=this.activeLocator._lastKnownPosition.coords;
+      } else {
+        coords = this.geometryArray.coordinates[0];
+      };
+      console.log(coords);
+      this.map.jumpTo({'center': coords,'zoom': 18});
+    // this.map.center = this.directions.geometry.coordinates[0];
+    // this.currentStep = this.directions.
+      this.map.bearing = bearing;
+      console.log(this.directions)
+    });
+  }
 
 }
 

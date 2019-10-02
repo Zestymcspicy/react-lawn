@@ -1,6 +1,6 @@
 {
   "name": "react-lawn",
-  "homepage": "http://halbeckerman.net/react-lawn",
+  "homepage": "http://halbeckerman.net/development",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,7 +19,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "aws s3 cp build s3://halbeckerman.net/react-lawn --recursive"
+    "deploy": "aws s3 cp build s3://halbeckerman.net/react-lawn --recursive",
+    "stage": "aws s3 cp build s3://halbeckerman.net/development --recursive"
   },
   "browserslist": [
     ">0.2%",

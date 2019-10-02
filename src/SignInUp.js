@@ -63,7 +63,7 @@ class SignInUp extends Component {
         fontSize: "20px",
       },
       buttonSignOut: {
-        width: "30%",
+        width: "60%",
         border: "none",
         backgroundColor: "transparent",
         height: "40px",

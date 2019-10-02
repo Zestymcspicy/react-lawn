@@ -20,6 +20,7 @@ class App extends Component {
         directionSteps: [],
         overall: {}
       },
+      navigaitonOn: false,
       wantsToSignIn: true,
       directionsVisible: false,
       user: {},
@@ -30,12 +31,16 @@ class App extends Component {
       closeDirections: this.closeDirections.bind(this),
       openDirections: this.openDirections.bind(this),
     }
-
+    this.toggleNavigationOn = this.toggleNavigationOn.bind(this);
     this.setUser = this.setUser.bind(this);
-    
+
   }
 
-
+toggleNavigationOn() {
+  this.state.navigationOn?
+  this.setState({navigationOn:false}):
+  this.setState({navigationOn:true});
+}
 
 toggleMenu = () => {
   this.state.menuOpen?
@@ -138,6 +143,8 @@ deleteDestination = destination => {
           setUser={this.setUser}
           openSignIn={this.openSignIn}/>
         <Map
+          navigationOn={this.state.navigationOn}
+          toggleNavigationOn={this.toggleNavigationOn}
           openDirections={this.openDirections}
           setDirections={this.setDirections}
           toggleMenu={this.toggleMenu}
