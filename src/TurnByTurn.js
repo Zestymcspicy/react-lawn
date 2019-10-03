@@ -11,6 +11,7 @@ const TurnByTurn = {
   upcomingStep: {},
   activeLocator: {},
   geometryArray: [],
+  navCallback: "",
 
 
   addLine: function(directions) {
@@ -68,7 +69,16 @@ const TurnByTurn = {
         // }
       },500);
       console.log(this.directions)
+      this.useWatchPosition();
     });
+  },
+
+  useWatchPosition: function() {
+    this.navCallback = navigator.geolocation.watchPosition(this.onLocationChange);
+  },
+
+  onLocationChange: function(x){
+    console.log(x);
   }
 
 }

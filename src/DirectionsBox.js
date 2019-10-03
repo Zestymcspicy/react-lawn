@@ -5,7 +5,7 @@ import { DestinationContext } from './Context.js'
 
 
 function DirectionsBox() {
-  const directionsContext = useContext(DestinationContext)
+  const directionsContext = useContext(DestinationContext);
   const baseClass = 'directions-icon directions-icon-'
   const overallDistance = directionsContext.directions.overall.distance
   const overallDuration = directionsContext.directions.overall.duration
@@ -46,30 +46,31 @@ function DirectionsBox() {
   if(directionsContext.navigationOn){
     navigationOnStyle = {
       position: "relative",
-      height: "80px",
+      height: "60px",
       zIndex: 34,
       backgroundColor: "#139f25",
-      width: "80%",
-      fontSize: "26px",
+      width: "75%",
+      fontSize: "24px",
       margin: "0 auto 0 auto",
       top: "-35px",
       display: "flex",
-
+      color: "black",
     }
   } else {
     navigationOnStyle = {}
   }
+//   <span className={baseClass+x.modifier}></span>
+//   <span>{x.instruction}</span>
+//   {x.distance!==0?
+//   <span> {x.distance}</span>
+//   :null
+// }
   if(directionsContext.directionsVisible===true) {
   return(
     <div style={navigationOnStyle}>
       {directionsContext.navigationOn?
         <>
-        <span className={baseClass+directionsContext.directions.directionSteps[0].modifier}></span>
-        <div>{directionsContext.directions.directionSteps[0].instruction}</div>
-        {directionsContext.directions.directionSteps[0].distance!==0?
-        <span> {directionsContext.directions.directionSteps[0].distance}</span>
-        :null
-        }
+        {buildInstruction(directionsContext.directions.directionSteps[1])}
         </>
         :
       <ol style={styles.list}>
@@ -84,12 +85,7 @@ function DirectionsBox() {
         <li
           key={index}
           style={styles.listItem}>
-        <span className={baseClass+x.modifier}></span>
-        <span>{x.instruction}</span>
-        {x.distance!==0?
-        <span> {x.distance}</span>
-        :null
-      }
+        {buildInstruction(x)}
         </li>
       )
       })}
@@ -100,6 +96,33 @@ function DirectionsBox() {
   } else {
     return null
   }
+
+function buildInstruction(x) {
+  // const directionsContext = useContext(DestinationContext);
+  const baseClass = 'directions-icon directions-icon-'
+  let iconStyle;
+  if (directionsContext.navigationOn){
+    iconStyle = {
+      height:"30px",
+      width:"30px",
+      backgroundSize:"30px 30px"
+    };
+  } else {
+    iconStyle = null;
+  };
+  return(
+    <>
+      <span
+        className={baseClass+x.modifier}
+        style={iconStyle}></span>
+      <span>{x.instruction}</span>
+      {x.distance!==0?
+      <span> {x.distance}</span>
+      :null
+      }
+    </>
+  )
+}
 }
 
 export default DirectionsBox;
