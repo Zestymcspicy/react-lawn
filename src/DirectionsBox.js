@@ -99,14 +99,18 @@ function DirectionsBox() {
 
 function buildInstruction(x) {
   // const directionsContext = useContext(DestinationContext);
-  const baseClass = 'directions-icon directions-icon-'
+  // const baseClass = 'directions-icon directions-icon-'
   let iconStyle;
+  let spanStyle;
   if (directionsContext.navigationOn){
     iconStyle = {
       height:"30px",
       width:"30px",
       backgroundSize:"30px 30px"
     };
+    spanStyle = {
+      marginRight:"10px"
+    }
   } else {
     iconStyle = null;
   };
@@ -115,7 +119,7 @@ function buildInstruction(x) {
       <span
         className={baseClass+x.modifier}
         style={iconStyle}></span>
-      <span>{x.instruction}</span>
+      <span style={spanStyle}>{x.instruction}</span>
       {x.distance!==0?
       <span> {x.distance}</span>
       :null
