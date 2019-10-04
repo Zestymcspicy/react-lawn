@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 // React Hooks and Context!!!
 import { DestinationContext } from './Context.js'
+import {TurnByTurn} from './TurnByTurn.js'
 
 
 
@@ -59,12 +60,7 @@ function DirectionsBox() {
   } else {
     navigationOnStyle = {}
   }
-//   <span className={baseClass+x.modifier}></span>
-//   <span>{x.instruction}</span>
-//   {x.distance!==0?
-//   <span> {x.distance}</span>
-//   :null
-// }
+
   if(directionsContext.directionsVisible===true) {
   return(
     <div style={navigationOnStyle}>
@@ -98,8 +94,7 @@ function DirectionsBox() {
   }
 
 function buildInstruction(x) {
-  // const directionsContext = useContext(DestinationContext);
-  // const baseClass = 'directions-icon directions-icon-'
+
   let iconStyle;
   let spanStyle;
   if (directionsContext.navigationOn){
@@ -121,7 +116,11 @@ function buildInstruction(x) {
         style={iconStyle}></span>
       <span style={spanStyle}>{x.instruction}</span>
       {x.distance!==0?
-      <span> {x.distance}</span>
+      <span> {directionsContext.navigationOn?
+        TurnByTurn.distanceToNextManeuver
+        :
+        x.distance
+        }</span>
       :null
       }
     </>

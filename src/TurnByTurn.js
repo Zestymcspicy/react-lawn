@@ -1,5 +1,4 @@
 // import {lineString} from "url:https://unpkg.com/@turf/helpers?module"
-// import React, {useState} from 'react';
 // import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 const turf = window.turf
 
@@ -16,6 +15,9 @@ const TurnByTurn = {
   navCallback: "",
   currentLocation: {},
   distanceToNextManeuver: 0,
+  geoOptions:{
+    enableHighAccuracy: true
+  },
 
 
   addLine: function(directions) {
@@ -64,13 +66,9 @@ const TurnByTurn = {
       };
       console.log(coords);
       setTimeout(()=>{
-        // if(bearing!=null){
-          this.map.setCenter(coords)
-          this.map.setZoom(18);
-          this.map.setBearing(bearing);
-        // } else {
-          // this.map.setZoom(16);
-        // }
+        this.map.setCenter(coords)
+        this.map.setZoom(18);
+        this.map.setBearing(bearing);
         this.useWatchPosition();
       },500);
       console.log(this.directions)
@@ -78,7 +76,11 @@ const TurnByTurn = {
   },
 
   useWatchPosition: function() {
-    this.navCallback = navigator.geolocation.watchPosition(this.onLocationChange);
+    this.navCallback = navigator.geolocation.watchPosition(this.onLocationChange, this.errorFunction, this.geoOptions);
+  },
+
+  errorFunc: function(error) {
+    console.log(error)
   },
 
   onLocationChange: function(x){
@@ -89,15 +91,9 @@ const TurnByTurn = {
     }
     console.log(TurnByTurn.geometryArray);
     TurnByTurn.getDistanceToNextManeuver(TurnByTurn.currentLocation.lngLat, TurnByTurn.geometryArray.coordinates[1])
-    // console.log(TurnByTurn.map.queryRenderedFeatures([],{layers:[TurnByTurn.routeLayer]}))
   },
 
-  // getDistanceToNextManeuver: function(currentLocation, nextManeuverLocation){
-  //   currentLocation = TurnByTurn.getPoint(currentLocation.lngLat);
-  //   nextManeuverLocation = TurnByTurn.getPoint(TurnByTurn.geometryArray[1]);
   getDistanceToNextManeuver: function(currentLocation, nextManeuverLocation){
-    // var features = TurnByTurn.map.queryRenderedFeatures( { layers: [TurnByTurn.presentLayerId] });
-    // console.log(features)
     var distanceLine = {
       "type": "FeatureCollection",
       "features": [{
@@ -112,23 +108,12 @@ const TurnByTurn = {
       }]
     };
     window.distanceLine = distanceLine;
-    let distance = turf.lineDistance(distanceLine);
+    let distance = turf.length(distanceLine, {units: 'miles'});
+    console.log(distance)
     TurnByTurn.distanceToNextManeuver = distance;
   },
 
-  getPoint: function(locationLngLat) {
-    var point = {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": locationLngLat
-      },
-      "properties": {
-        "id": String(new Date().getTime())
-      }
-    };
-    return point;
-  }
+
 
 }
 
