@@ -41,11 +41,39 @@ componentDidMount (){
     myApp.initAll(loc, bearing);
     myApp.addOriginLocationText(loc);
     }, this.errorFunction, this.geoLocateOptions)
+    this.turnByTurnWatcher();
   }else{
     myApp.noGeoStart()
   }
 }
 
+onObjectChange = (object, onChange) => {
+	const handler = {
+		get(target, property, receiver) {
+			try {
+				return new Proxy(target[property], handler);
+			} catch (err) {
+				return Reflect.get(target, property, receiver);
+			}
+		},
+		defineProperty(target, property, descriptor) {
+			onChange();
+			return Reflect.defineProperty(target, property, descriptor);
+		},
+		deleteProperty(target, property) {
+			onChange();
+			return Reflect.deleteProperty(target, property);
+		}
+	};
+
+	return new Proxy(object, handler);
+};
+
+
+turnByTurnWatcher() {
+  this.onObjectChange(TurnByTurn, this.setState({TurnByTurn}))
+  console.log(this.state.TurnByTurn);
+}
 
 errorFunction(error, myApp) {
   console.log(error);
@@ -63,7 +91,7 @@ async initAll(loc, bearing) {
   this.setMapCenter(loc);
   this.setUserLocation(loc);
   this.addDestinationBox(loc);
-  this.addGeolocator();
+  // this.addGeolocator();
 };
 
 addMap() {
@@ -241,15 +269,15 @@ startNav() {
   if(this.props.navigationOn){
     this.props.toggleNavigationOn();
     this.setUserLocation(this.state.userLngLat);
-    this.triggerActiveLocator();
+    // this.triggerActiveLocator();
     this.userLocationMarker.addTo(this._map);
   } else {
     this.props.toggleNavigationOn();
     this.userLocationMarker.remove();
-    TurnByTurn.activeLocator = this.activeLocator;
-    this.triggerActiveLocator().then(function() {
+    // TurnByTurn.activeLocator = this.activeLocator;
+    // this.triggerActiveLocator().then(function() {
       TurnByTurn.startNav(bearing);
-    });
+    // });
   }
 }
 
